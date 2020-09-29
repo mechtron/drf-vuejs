@@ -17,7 +17,7 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
 
 - Python 3
 - Django REST framework
-- `django-allauth` (login via Goole and GitHub via OAuth2)
+- `django-allauth` (login via Google and GitHub via OAuth2)
 - SQLite DB
 
 #### DevOps
