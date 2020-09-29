@@ -2,3 +2,4 @@ Django==3.1.1
 django-allauth==0.42.0
 django-rest-auth==0.9.5
 djangorestframework==3.11.1
+drf-yasg==1.17.1
