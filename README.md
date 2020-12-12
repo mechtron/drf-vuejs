@@ -54,7 +54,7 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
 
 1. Setup a [new OAuth app in Google](https://developers.google.com/identity/sign-in/web/sign-in) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8000/auth/google/callback/`.
 1. Under "Social Accounts", click "Add" and add a social application with the following info:
-    Name: GitHub
+    Name: Google
     Client id: from #1
     Secret key: from #1
     Key: N/A
