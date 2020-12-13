@@ -1,37 +1,26 @@
 <template>
   <div class="home">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
+    <b-jumbotron header="CRUD App" :lead="description">
+      <hr class="my-4">
+      <p>Check out my project on GitHub:</p>
+      <b-button variant="primary" href="https://github.com/mechtron/drf-vuejs" target="_blank">mechtron/drf-vuejs</b-button>
+    </b-jumbotron>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home',
+  data () {
+    return {
+      example: 'test'
+    }
+  },
   props: {
-    msg: String
+    description: String
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>
