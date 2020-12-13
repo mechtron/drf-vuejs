@@ -1,24 +1,17 @@
 <template>
   <div id="app">
     <NavBar/>
-    <Home :description="description"/>
+    <router-view/>
   </div>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue'
-import Home from './components/Home.vue'
 
 export default {
   name: 'CRUD-App',
   components: {
-    NavBar,
-    Home
-  },
-  data () {
-    return {
-      description: 'A simple blog post platform'
-    }
+    NavBar
   }
 }
 </script>
