@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <NavBar/>
-    <Home msg="Welcome to Your Vue.js App"/>
+    <Home :description="description"/>
   </div>
 </template>
 
@@ -10,10 +10,15 @@ import NavBar from './components/NavBar.vue'
 import Home from './components/Home.vue'
 
 export default {
-  name: 'App',
+  name: 'CRUD-App',
   components: {
     NavBar,
     Home
+  },
+  data () {
+    return {
+      description: 'A simple blog post platform'
+    }
   }
 }
 </script>
