@@ -19,6 +19,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "^4.5.9",
     "@vue/cli-service": "~4.5.0",
+    "axios": "^0.18.0",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^4.5.2",
     "eslint": "^6.7.2",
@@ -28,6 +29,7 @@
     "portal-vue": "^2.1.7",
     "sass": "^1.26.11",
     "sass-loader": "^10.0.2",
+    "vue-cli-plugin-axios": "0.0.4",
     "vue-cli-plugin-bootstrap-vue": "~0.7.0",
     "vue-template-compiler": "^2.6.11"
   }
