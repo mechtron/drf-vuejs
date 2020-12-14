@@ -63,7 +63,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'http:///127.0.0.1:8000',
+    'http://127.0.0.1:8000',
     'http://127.0.0.1:8080',
     'https://accounts.google.com',
 ]
