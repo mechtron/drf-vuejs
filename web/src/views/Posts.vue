@@ -1,10 +1,10 @@
 <template>
   <div>
-    <b-container class="bv-example-row">
+    <b-container>
       <b-row>
         <b-col></b-col>
         <b-col> 
-          <h3>Popular Posts</h3>
+          <h3>Posts</h3>
         </b-col>
         <b-col>
           <b-button variant="success" @click="createPost">
@@ -17,13 +17,22 @@
         <b-col></b-col>
         <b-col cols="10"> 
           <div v-for="(item) in posts" :key="item.id">
-            <b-card :title="item.title">
+            <b-card :title="item.title" :sub-title="item.content">
               <b-card-text>
-                {{item.content}}
+                Posted {{getTimeSince(item.dateCreated)}} ago by {{item.author}}
               </b-card-text>
-              <b-button variant="primary" @click="likePost(item.id)">
-                <b-badge variant="light">{{item.like_count}}</b-badge> Like
-              </b-button>
+              <b-row>
+                <b-col>
+                  <b-button id="delete-button" class="mr-1" variant="danger" @click="deletePost(item.id)"><b-icon icon="trash"></b-icon></b-button>
+                  <b-button id="update-button" class="mr-1" variant="warning" @click="updatePost(item.id)"><b-icon icon="pencil"></b-icon></b-button>
+                </b-col>
+                <b-col>
+                  <b-button class="mr-1" variant="primary" @click="likePost(item.id)">
+                    <b-badge variant="light">{{item.like_count}}</b-badge>
+                    Nice <b-icon icon="hand-thumbs-up"></b-icon>
+                  </b-button>
+                </b-col>
+              </b-row>
             </b-card>
             <br/>
           </div>
@@ -41,14 +50,16 @@ export default {
       posts: [
         {
           id: 1,
-          dateCreated: "2020-12-13T23:30:00.000Z",
-          title: "Test title",
-          content: "First",
+          author: "admin",
+          dateCreated: "2020-11-21T23:30:00.000Z",
+          title: "First!!!1one",
+          content: "First post is the best post",
           like_count: 2
         },
         {
           id: 2,
-          dateCreated: "2020-12-13T23:45:00.000Z",
+          author: "mechtron",
+          dateCreated: "2020-12-03T23:45:00.000Z",
           title: "Best post ever",
           content: "The meaning of life will blow your mind",
           like_count: 3
@@ -66,6 +77,37 @@ export default {
     },
     likePost(postId) {
       console.log("Liking post with ID " + postId);
+    },
+    updatePost(postId) {
+      console.log("Updating post with ID " + postId);
+    },
+    deletePost(postId) {
+      console.log("Deleting post with ID " + postId);
+    },
+    getTimeSince(date_string) {
+      var date = Date.parse(date_string);
+      var seconds = Math.floor((new Date() - date) / 1000);
+      var interval = seconds / 31536000;
+      if (interval > 1) {
+        return Math.floor(interval) + " years";
+      }
+      interval = seconds / 2592000;
+      if (interval > 1) {
+        return Math.floor(interval) + " months";
+      }
+      interval = seconds / 86400;
+      if (interval > 1) {
+        return Math.floor(interval) + " days";
+      }
+      interval = seconds / 3600;
+      if (interval > 1) {
+        return Math.floor(interval) + " hours";
+      }
+      interval = seconds / 60;
+      if (interval > 1) {
+        return Math.floor(interval) + " minutes";
+      }
+      return Math.floor(seconds) + " seconds";
     }
   }
 }
