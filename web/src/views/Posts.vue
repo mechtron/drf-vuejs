@@ -7,7 +7,7 @@
           <h3>Posts</h3>
         </b-col>
         <b-col>
-          <b-button variant="success" @click="createPost">
+          <b-button variant="success" v-b-modal.create-update-modal>
             <b-icon icon="plus"></b-icon>
           </b-button>
         </b-col>
@@ -40,13 +40,68 @@
         <b-col></b-col>
       </b-row>
     </b-container>
+    <b-modal centered
+      id="create-update-modal"
+      ref="modal"
+      title="Create a new post"
+      ok-title="Submit"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOk"
+    >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label="Title"
+          label-for="input-title"
+          invalid-feedback="Title is required"
+        >
+          <b-form-input
+            id="input-title"
+            type="text"
+            v-model="form.title"
+            :state="formTitleLength"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group
+          label="Post content"
+          label-for="input-content"
+          invalid-feedback="Content is required"
+        >
+          <b-form-input
+            id="input-content"
+            v-model="form.content"
+            :state="formContentLength"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
   </div>
 </template>
 
 <script>
 export default {
+  computed: {
+    formTitleLength() {
+      if (this.form.title == null) {
+        return false;
+      }
+      return this.form.title.length > 2 ? true : false;
+    },
+    formContentLength() {
+      if (this.form.content == null) {
+        return false;
+      }
+      return this.form.content.length > 5 ? true : false;
+    }
+  },
   data () {
     return {
+      create_or_update_mode: "create",
+      updated_post_id: null,
+      user_is_logged_in: true,
+      user_logged_in: "mechtron",
       posts: [
         {
           id: 1,
@@ -64,22 +119,23 @@ export default {
           content: "The meaning of life will blow your mind",
           like_count: 3
         }
-      ]
+      ],
+      form: {
+        title: null,
+        content: null
+      }
     }
   },
-  props: {
-    example2: String
-  },
   methods: {
-    createPost(evt) {
-      evt.preventDefault();
-      console.log("Creating new post!")
+    createPost(title, content) {
+      console.log("Creating a new post with title " + title + " and content " + content);
+      this.showModal();
     },
     likePost(postId) {
       console.log("Liking post with ID " + postId);
     },
-    updatePost(postId) {
-      console.log("Updating post with ID " + postId);
+    updatePost(postId, title, content) {
+      console.log("Updating post with ID " + postId + " to title " + title + " and content " + content);
     },
     deletePost(postId) {
       console.log("Deleting post with ID " + postId);
@@ -108,6 +164,44 @@ export default {
         return Math.floor(interval) + " minutes";
       }
       return Math.floor(seconds) + " seconds";
+    },
+    checkFormValidity() {
+      const valid = this.$refs.form.checkValidity();
+      return valid;
+    },
+    resetModal() {
+      this.form.title = null;
+      this.form.content = null;
+    },
+    handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault();
+      this.handleSubmit();
+    },
+    handleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
+      }
+      // Create or edit the post
+      if (this.create_or_update_mode == "create") {
+        this.createPost(this.form.title, this.form.content);
+      } else { // update mode
+        this.updatePost(this.updated_post_id, this.form.title, this.form.content);
+      }
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.hideModal();
+      })
+    },
+    hideModal() {
+      this.$bvModal.hide('create-update-modal');
+    },
+    showModal() {
+      this.$bvModal.show('create-update-modal');
+    },
+    toggleModal() {
+      this.$bvModal.toggle('create-update-modal');
     }
   }
 }
