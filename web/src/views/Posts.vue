@@ -23,12 +23,12 @@
               </b-card-text>
               <b-row>
                 <b-col>
-                  <b-button id="delete-button" class="mr-1" variant="danger" @click="handleDeletePost(index)"><b-icon icon="trash"></b-icon></b-button>
+                  <b-button id="delete-button" class="mr-1" variant="danger" @click="handleDeletePost(item)"><b-icon icon="trash"></b-icon></b-button>
                   <b-button id="update-button" class="mr-1" variant="warning" @click="handleUpdatePost(index)"><b-icon icon="pencil"></b-icon></b-button>
                 </b-col>
                 <b-col>
-                  <b-button class="mr-1" variant="primary" @click="likePost(item.id)">
-                    <b-badge variant="light">{{item.like_count}}</b-badge>
+                  <b-button class="mr-1" variant="primary" @click="likePost(item)">
+                    <b-badge variant="light">{{item.likeCount}}</b-badge>
                     Nice <b-icon icon="hand-thumbs-up"></b-icon>
                   </b-button>
                 </b-col>
@@ -98,9 +98,9 @@ export default {
   data () {
     return {
       create_or_update_mode: "create",
-      updated_post_id: null,
-      user_is_logged_in: true,
-      user_logged_in: "mechtron",
+      updatedPostIndex: null,
+      userIsLoggedIn: true,
+      userLoggedIn: "mechtron",
       posts: [
         {
           id: 1,
@@ -108,7 +108,7 @@ export default {
           dateCreated: "2020-11-21T23:30:00.000Z",
           title: "First!!!1one",
           content: "First post is the best post",
-          like_count: 2
+          likeCount: 2
         },
         {
           id: 2,
@@ -116,7 +116,7 @@ export default {
           dateCreated: "2020-12-03T23:45:00.000Z",
           title: "Best post ever",
           content: "The meaning of life will blow your mind",
-          like_count: 3
+          likeCount: 3
         }
       ],
       form: {
@@ -128,17 +128,38 @@ export default {
   methods: {
     createPost(title, content) {
       console.log("Creating a new post with title " + title + " and content " + content);
-      this.resetModal();
-      this.showModal();
+      var nextId = 0;
+      if (this.posts.length > 0) {
+        nextId = this.posts[this.posts.length - 1].id + 1;
+      }
+      this.posts.push({
+        id: nextId,
+        author: this.userLoggedIn,
+        dateCreated: new Date().toISOString(),
+        title: title,
+        content: content,
+        likeCount: 0
+      });
     },
-    likePost(postId) {
-      console.log("Liking post with ID " + postId);
+    likePost(post) {
+      console.log("Liking post with ID " + post.id);
+      post.likeCount += 1;
     },
-    updatePost(postId, title, content) {
-      console.log("Updating post with ID " + postId + " to title " + title + " and content " + content);
+    updatePost(postIndex, title, content) {
+      var post = this.posts[postIndex];
+      console.log("Updating post with ID " + post.id + " to title " + title + " and content " + content);
+      post.title = title;
+      post.content = content;
     },
     deletePost(postId) {
       console.log("Deleting post with ID " + postId);
+      for (var i=0; i<this.posts.length; i++) {
+        if (this.posts[i].id == postId) {
+          this.posts.splice(i, 1);
+          return;
+        }
+      }
+      console.log("Error deleting post with ID " + postId);
     },
     handleCreatePost(evt) {
       evt.preventDefault();
@@ -148,13 +169,12 @@ export default {
     handleUpdatePost(postIndex) {
       this.create_or_update_mode = "update";
       var post = this.posts[postIndex];
-      this.updated_post_id = postIndex;
+      this.updatedPostIndex = postIndex;
       this.form.title = post.title;
       this.form.content = post.content;
       this.showModal();
     },
-    handleDeletePost(postIndex) {
-      var post = this.posts[postIndex];
+    handleDeletePost(post) {
       this.$bvModal.msgBoxConfirm('Please confirm that you want to delete post with title "' + post.title + '"', {
         title: 'Confirm deletion',
         okVariant: 'danger',
@@ -217,7 +237,7 @@ export default {
       if (this.create_or_update_mode == "create") {
         this.createPost(this.form.title, this.form.content);
       } else { // update mode
-        this.updatePost(this.updated_post_id, this.form.title, this.form.content);
+        this.updatePost(this.updatedPostIndex, this.form.title, this.form.content);
       }
       // Hide the modal manually
       this.$nextTick(() => {
