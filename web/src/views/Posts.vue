@@ -177,7 +177,7 @@ export default {
       this.showModal();
     },
     handleDeletePost(post) {
-      this.$bvModal.msgBoxConfirm('Please confirm that you want to delete post with title "' + post.title + '"', {
+      this.$bvModal.msgBoxConfirm('Are you sure that you want to delete the post with title "' + post.title + '"', {
         title: 'Confirm deletion',
         okVariant: 'danger',
         okTitle: 'Yes',
