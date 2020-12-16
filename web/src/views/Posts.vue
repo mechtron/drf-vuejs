@@ -7,7 +7,7 @@
           <h3>Posts</h3>
         </b-col>
         <b-col>
-          <b-button variant="success" @click="handleCreatePost">
+          <b-button variant="success" @click="handleCreatePost" v-if="userIsLoggedIn">
             <b-icon icon="plus"></b-icon>
           </b-button>
         </b-col>
@@ -23,8 +23,10 @@
               </b-card-text>
               <b-row>
                 <b-col>
-                  <b-button id="delete-button" class="mr-1" variant="danger" @click="handleDeletePost(item)"><b-icon icon="trash"></b-icon></b-button>
-                  <b-button id="update-button" class="mr-1" variant="warning" @click="handleUpdatePost(index)"><b-icon icon="pencil"></b-icon></b-button>
+                  <div v-if="item.author == userLoggedIn" >
+                    <b-button id="delete-button" class="mr-1" variant="danger" @click="handleDeletePost(item)"><b-icon icon="trash"></b-icon></b-button>
+                    <b-button id="update-button" class="mr-1" variant="warning" @click="handleUpdatePost(index)"><b-icon icon="pencil"></b-icon></b-button>
+                  </div>
                 </b-col>
                 <b-col>
                   <b-button class="mr-1" variant="primary" @click="likePost(item)">
