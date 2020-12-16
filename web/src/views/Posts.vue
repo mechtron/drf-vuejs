@@ -7,7 +7,7 @@
           <h3>Posts</h3>
         </b-col>
         <b-col>
-          <b-button variant="success" v-b-modal.create-update-modal>
+          <b-button variant="success" @click="handleCreatePost">
             <b-icon icon="plus"></b-icon>
           </b-button>
         </b-col>
@@ -16,15 +16,15 @@
       <b-row>
         <b-col></b-col>
         <b-col cols="10"> 
-          <div v-for="(item) in posts" :key="item.id">
+          <div v-for="(item, index) in posts" :key="item.id">
             <b-card :title="item.title" :sub-title="item.content">
               <b-card-text>
                 Posted {{getTimeSince(item.dateCreated)}} ago by {{item.author}}
               </b-card-text>
               <b-row>
                 <b-col>
-                  <b-button id="delete-button" class="mr-1" variant="danger" @click="deletePost(item.id)"><b-icon icon="trash"></b-icon></b-button>
-                  <b-button id="update-button" class="mr-1" variant="warning" @click="updatePost(item.id)"><b-icon icon="pencil"></b-icon></b-button>
+                  <b-button id="delete-button" class="mr-1" variant="danger" @click="handleDeletePost(index)"><b-icon icon="trash"></b-icon></b-button>
+                  <b-button id="update-button" class="mr-1" variant="warning" @click="handleUpdatePost(index)"><b-icon icon="pencil"></b-icon></b-button>
                 </b-col>
                 <b-col>
                   <b-button class="mr-1" variant="primary" @click="likePost(item.id)">
@@ -43,11 +43,10 @@
     <b-modal centered
       id="create-update-modal"
       ref="modal"
-      title="Create a new post"
+      :title="modePretty() + ' post'"
       ok-title="Submit"
-      @show="resetModal"
       @hidden="resetModal"
-      @ok="handleOk"
+      @ok="handleSubmit"
     >
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <b-form-group
@@ -129,6 +128,7 @@ export default {
   methods: {
     createPost(title, content) {
       console.log("Creating a new post with title " + title + " and content " + content);
+      this.resetModal();
       this.showModal();
     },
     likePost(postId) {
@@ -139,6 +139,24 @@ export default {
     },
     deletePost(postId) {
       console.log("Deleting post with ID " + postId);
+    },
+    handleCreatePost(evt) {
+      evt.preventDefault();
+      this.create_or_update_mode = "create";
+      this.showModal();
+    },
+    handleUpdatePost(postIndex) {
+      this.create_or_update_mode = "update";
+      var post = this.posts[postIndex];
+      this.updated_post_id = postIndex;
+      this.form.title = post.title;
+      this.form.content = post.content;
+      this.showModal();
+    },
+    handleDeletePost(postIndex) {
+      var postId = this.posts[postIndex].id;
+      // TODO: confirm deletion
+      this.deletePost(postId);
     },
     getTimeSince(date_string) {
       var date = Date.parse(date_string);
@@ -173,12 +191,9 @@ export default {
       this.form.title = null;
       this.form.content = null;
     },
-    handleOk(bvModalEvt) {
+    handleSubmit(bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault();
-      this.handleSubmit();
-    },
-    handleSubmit() {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
         return
@@ -202,6 +217,9 @@ export default {
     },
     toggleModal() {
       this.$bvModal.toggle('create-update-modal');
+    },
+    modePretty() {
+      return this.create_or_update_mode == "create" ? "Create" : "Update";
     }
   }
 }
