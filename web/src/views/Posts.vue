@@ -154,9 +154,24 @@ export default {
       this.showModal();
     },
     handleDeletePost(postIndex) {
-      var postId = this.posts[postIndex].id;
-      // TODO: confirm deletion
-      this.deletePost(postId);
+      var post = this.posts[postIndex];
+      this.$bvModal.msgBoxConfirm('Please confirm that you want to delete post with title "' + post.title + '"', {
+        title: 'Confirm deletion',
+        okVariant: 'danger',
+        okTitle: 'Yes',
+        cancelTitle: 'No',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+      .then(value => {
+        if (value) {
+          this.deletePost(post.id);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     getTimeSince(date_string) {
       var date = Date.parse(date_string);
