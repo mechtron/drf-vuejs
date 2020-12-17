@@ -7,7 +7,7 @@
           <h3>Posts</h3>
         </b-col>
         <b-col>
-          <b-button variant="success" @click="handleCreatePost" v-if="userIsLoggedIn">
+          <b-button variant="success" @click="handleCreatePost" v-if="$store.getters.user.isLoggedIn">
             <b-icon icon="plus"></b-icon>
           </b-button>
         </b-col>
@@ -16,14 +16,14 @@
       <b-row>
         <b-col></b-col>
         <b-col cols="10"> 
-          <div v-for="(item, index) in posts" :key="item.id">
+          <div v-for="(item, index) in $store.getters.posts" :key="item.id">
             <b-card :title="item.title" :sub-title="item.content">
               <b-card-text>
                 Posted {{getTimeSince(item.dateCreated)}} ago by {{item.author}}
               </b-card-text>
               <b-row>
                 <b-col>
-                  <div v-if="item.author == userLoggedIn" >
+                  <div v-if="item.author == $store.getters.user.username" >
                     <b-button id="delete-button" class="mr-1" variant="danger" @click="handleDeletePost(item)"><b-icon icon="trash"></b-icon></b-button>
                     <b-button id="update-button" class="mr-1" variant="warning" @click="handleUpdatePost(index)"><b-icon icon="pencil"></b-icon></b-button>
                   </div>
@@ -99,28 +99,8 @@ export default {
   },
   data () {
     return {
-      create_or_update_mode: "create",
+      createOrUpdateMode: "create",
       updatedPostIndex: null,
-      userIsLoggedIn: true,
-      userLoggedIn: "mechtron",
-      posts: [
-        {
-          id: 1,
-          author: "admin",
-          dateCreated: "2020-11-21T23:30:00.000Z",
-          title: "First!!!1one",
-          content: "First post is the best post",
-          likeCount: 2
-        },
-        {
-          id: 2,
-          author: "mechtron",
-          dateCreated: "2020-12-03T23:45:00.000Z",
-          title: "Best post ever",
-          content: "The meaning of life will blow your mind",
-          likeCount: 3
-        }
-      ],
       form: {
         title: null,
         content: null
@@ -131,12 +111,12 @@ export default {
     createPost(title, content) {
       console.log("Creating a new post with title " + title + " and content " + content);
       var nextId = 0;
-      if (this.posts.length > 0) {
-        nextId = this.posts[this.posts.length - 1].id + 1;
+      if (this.$store.getters.posts.length > 0) {
+        nextId = this.$store.getters.posts[this.$store.getters.posts.length - 1].id + 1;
       }
-      this.posts.push({
+      this.$store.getters.posts.push({
         id: nextId,
-        author: this.userLoggedIn,
+        author: this.$store.getters.user.username,
         dateCreated: new Date().toISOString(),
         title: title,
         content: content,
@@ -148,16 +128,16 @@ export default {
       post.likeCount += 1;
     },
     updatePost(postIndex, title, content) {
-      var post = this.posts[postIndex];
+      var post = this.$store.getters.posts[postIndex];
       console.log("Updating post with ID " + post.id + " to title " + title + " and content " + content);
       post.title = title;
       post.content = content;
     },
     deletePost(postId) {
       console.log("Deleting post with ID " + postId);
-      for (var i=0; i<this.posts.length; i++) {
-        if (this.posts[i].id == postId) {
-          this.posts.splice(i, 1);
+      for (var i=0; i<this.$store.getters.posts.length; i++) {
+        if (this.$store.getters.posts[i].id == postId) {
+          this.$store.getters.posts.splice(i, 1);
           return;
         }
       }
@@ -165,12 +145,12 @@ export default {
     },
     handleCreatePost(evt) {
       evt.preventDefault();
-      this.create_or_update_mode = "create";
+      this.createOrUpdateMode = "create";
       this.showModal();
     },
     handleUpdatePost(postIndex) {
-      this.create_or_update_mode = "update";
-      var post = this.posts[postIndex];
+      this.createOrUpdateMode = "update";
+      var post = this.$store.getters.posts[postIndex];
       this.updatedPostIndex = postIndex;
       this.form.title = post.title;
       this.form.content = post.content;
@@ -236,7 +216,7 @@ export default {
         return
       }
       // Create or edit the post
-      if (this.create_or_update_mode == "create") {
+      if (this.createOrUpdateMode == "create") {
         this.createPost(this.form.title, this.form.content);
       } else { // update mode
         this.updatePost(this.updatedPostIndex, this.form.title, this.form.content);
@@ -256,7 +236,7 @@ export default {
       this.$bvModal.toggle('create-update-modal');
     },
     modePretty() {
-      return this.create_or_update_mode == "create" ? "Create" : "Update";
+      return this.createOrUpdateMode == "create" ? "Create" : "Update";
     }
   }
 }
