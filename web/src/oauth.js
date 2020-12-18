@@ -17,8 +17,9 @@ async function get_oauth_authorize_url() {
   // });
   let res = await axios.get('http://127.0.0.1:8000/auth/google/url/', {
     headers: {
-      // "Access-Control-Allow-Origin": "*"
-    }
+      "Access-Control-Allow-Origin": "*"
+    },
+    crossdomain: true,
   });
   console.log(res.data);
 }
