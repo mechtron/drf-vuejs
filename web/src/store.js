@@ -5,6 +5,29 @@ import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex)
 
+async function getOauthAuthorizeUrl() {
+  // axios.get('../api/auth/google/url/')
+  // axios.get('localhost:8000/auth/google/url/')
+  // .then((response) => {
+  //   console.log(response.data);
+  //   // this.fields = response.data;
+  //   // this.top10 = response.data;
+  // })
+  // .catch(function(error) {
+  //   console.log(error);
+  // })
+  // .then(function() {
+  //   // always executed
+  // });
+  let res = await axios.get('http://127.0.0.1:8000/auth/google/url/', {
+    headers: {
+      "Access-Control-Allow-Origin": "*"
+    },
+    crossdomain: true,
+  });
+  console.log(res.data);
+}
+
 export default new Vuex.Store({
   state: {
     status: '',
@@ -52,19 +75,16 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    login({ commit }, user) {
+    getSelf({ commit }, token) {
       return new Promise((resolve, reject) => {
         axios({
-          url: '/api/auth/login/google',
-          data: user,
-          method: 'POST'
+          url: '/api/auth/me/',
+          data: token,
+          method: 'GET'
         })
           .then(resp => {
-            const token = resp.data.auth_token
             const user = resp.data
-            localStorage.setItem('token', token)
-            commit('LOGIN_SUCCES', token)
-            commit('LOGIN_SUCCES', user)
+            commit('LOGIN_SUCCES', {token, user})
             resolve(resp)
           })
           .catch(err => {
@@ -74,23 +94,62 @@ export default new Vuex.Store({
           })
       })
     },
-    logout({ commit }, user) {
-      return new Promise((resolve, reject) => {
-        axios({
-          url: '/api/auth/logout',
-          data: user,
-          method: 'POST'
-        })
-          .then(resp => {
-            commit('LOGOUT')
-            const token = resp.data.auth_token
-            localStorage.removeItem('token', token)
-            resolve(resp)
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
+    // login({ commit }, oAuthProvider) {
+    login(state, oAuthProvider) {
+      // return new Promise((resolve, reject) => {
+        if (oAuthProvider == 'google') {
+          console.log("Logging in via Google..");
+          var authorize_url = getOauthAuthorizeUrl();
+          console.log(authorize_url);
+          // axios({
+          //   url: '/api/auth/login/google',
+          //   method: 'GET'
+          // })
+          //   .then(resp => {
+          //     const token = resp.data.auth_token
+          //     const user = resp.data
+          //     localStorage.setItem('token', token)
+          //     commit('LOGIN_SUCCES', {token, user})
+          //     resolve(resp)
+          //   })
+          //   .catch(err => {
+          //     commit('LOGIN_ERROR', err)
+          //     localStorage.removeItem('token')
+          //     reject(err)
+          //   })
+          // })
+        } else {
+          console.log('Unexpected oAuthProvider: ' + oAuthProvider);
+        }
+      // })
+    },
+    // logout({ commit }, oAuthProvider) {
+    logout(state, oAuthProvider) {
+      console.log(oAuthProvider);
+      // return new Promise((resolve, reject) => {
+        if (oAuthProvider == 'google') {
+          console.log("Logging-out via Google..");
+          var authorize_url = getOauthAuthorizeUrl();
+          console.log(authorize_url);
+          // axios({
+          //   url: '/api/auth/logout',
+          //   data: user,
+          //   method: 'POST'
+          // })
+          //   .then(resp => {
+          //     commit('LOGOUT')
+          //     const token = resp.data.auth_token
+          //     localStorage.removeItem('token', token)
+          //     resolve(resp)
+          //   })
+          //   .catch(err => {
+          //     reject(err)
+          //   })
+          // })
+        } else {
+          console.log('Unexpected oAuthProvider: ' + oAuthProvider);
+        }
+      // })
     }
   },
   getters: {

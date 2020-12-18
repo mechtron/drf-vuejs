@@ -85,6 +85,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   computed: {
+    ...mapGetters(["user", "posts"]),
     formTitleLength() {
       if (this.form.title == null) {
         return false;
@@ -96,8 +97,7 @@ export default {
         return false;
       }
       return this.form.content.length > 5 ? true : false;
-    },
-    ...mapGetters(["user", "posts"])
+    }
   },
   data () {
     return {

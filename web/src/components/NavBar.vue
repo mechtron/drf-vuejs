@@ -5,35 +5,38 @@
     <b-nav-item to="/posts">Posts</b-nav-item>
     <b-nav-item to="/hof">HOF</b-nav-item>
     <b-nav-item to="/about">About</b-nav-item>
-    <b-nav-item @click="oAuthLogin('google')">Login</b-nav-item>
+    <b-nav-item @click="login('google')" v-if="!$store.getters.user.isLoggedIn">Login</b-nav-item>
+    <b-nav-item @click="logout('google')" v-if="$store.getters.user.isLoggedIn">Logout</b-nav-item>
   </b-nav>
 </div>
 </template>
 
 <script>
-// import { store, mutations } from "./store";
-import oauth from '../oauth';
+import { mapActions, mapGetters } from 'vuex'
 export default {
-  // computed: {
-  //   newsletters() {
-  //     return store.newsletters;
-  //   }
-  // },
+  computed: {
+    ...mapGetters(["user"])
+  },
   data() {
     return {
-      show: true
     }
   },
   methods: {
-    // setNewsletter: mutations.setNewsletter,
-    oAuthLogin(provider) {
-      oauth.login(provider);
+    ...mapActions([
+      'getSelf',
+      'login',
+      'logout'
+    ]),
+    detectSession() {
+      if (self.user != null && self.user.token != '' && self.user.username != '') {
+        console.log("Previous session detected..");
+        self.getSelf(self.user.token);
+      }
     }
+  },
+  mounted() {
+    this.detectSession();
   }
-  // ,
-  // mounted() {
-  //   this.updateFormFields()
-  // }
 }
 </script>
 
