@@ -16,12 +16,12 @@ export default new Vuex.Store({
     posts: []
   },
   mutations: {
-    AUTH_SUCCES(state, token, user) {
+    LOGIN_SUCCES(state, token, user) {
       state.status = 'success';
       state.user.token = token;
       state.user.username = user;
     },
-    AUTH_ERROR(state) {
+    LOGIN_ERROR(state) {
       state.status = 'error';
     },
     LOGOUT(state) {
@@ -63,12 +63,12 @@ export default new Vuex.Store({
             const token = resp.data.auth_token
             const user = resp.data
             localStorage.setItem('token', token)
-            commit('AUTH_SUCCES', token)
-            commit('AUTH_SUCCES', user)
+            commit('LOGIN_SUCCES', token)
+            commit('LOGIN_SUCCES', user)
             resolve(resp)
           })
           .catch(err => {
-            commit('AUTH_ERROR', err)
+            commit('LOGIN_ERROR', err)
             localStorage.removeItem('token')
             reject(err)
           })
