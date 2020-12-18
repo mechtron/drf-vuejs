@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   computed: {
     formTitleLength() {
@@ -95,7 +96,8 @@ export default {
         return false;
       }
       return this.form.content.length > 5 ? true : false;
-    }
+    },
+    ...mapGetters(["user", "posts"])
   },
   data () {
     return {
@@ -108,40 +110,138 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'CREATE_POST',
+      'DELETE_POST',
+      'LIKE_POST',
+      'REFRESH_POSTS',
+      'UPDATE_POST'
+    ]),
+    getPosts() {
+      console.log("Getting posts..");
+      var posts = [
+        {
+          id: 1,
+          author: "admin",
+          dateCreated: "2020-11-21T23:30:00.000Z",
+          title: "First!!!1one",
+          content: "First post is the best post",
+          likeCount: 2
+        },
+        {
+          id: 2,
+          author: "mechtron",
+          dateCreated: "2020-12-03T23:45:00.000Z",
+          title: "Best post ever",
+          content: "The meaning of life will blow your mind",
+          likeCount: 3
+        }
+      ]
+      this.REFRESH_POSTS(posts);
+      // return new Promise((resolve, reject) => {
+      //   axios({
+      //     url: '/api/posts',
+      //     method: 'GET'
+      //   })
+      //     .then(resp => {
+      //       this.REFRESH_POSTS(resp.data.posts)
+      //       resolve(resp);
+      //     })
+      //     .catch(err => {
+      //       console.log("Error getting posts: " + err)
+      //       reject(err);
+      //     })
+      // })
+    },
     createPost(title, content) {
       console.log("Creating a new post with title " + title + " and content " + content);
       var nextId = 0;
-      if (this.$store.getters.posts.length > 0) {
-        nextId = this.$store.getters.posts[this.$store.getters.posts.length - 1].id + 1;
+      if (this.posts.length > 0) {
+        nextId = this.posts[this.posts.length - 1].id + 1;
       }
-      this.$store.getters.posts.push({
+      var post = {
         id: nextId,
-        author: this.$store.getters.user.username,
+        author: this.user.username,
         dateCreated: new Date().toISOString(),
         title: title,
         content: content,
         likeCount: 0
-      });
+      }
+      this.CREATE_POST(post);
+      // return new Promise((resolve, reject) => {
+      //   axios({
+      //     url: '/api/posts',
+      //     data: user,
+      //     method: 'POST'
+      //   })
+      //     .then(resp => {
+      //       this.CREATE_POST(resp.data.post);
+      //       resolve(resp);
+      //     })
+      //     .catch(err => {
+      //       reject(err);
+      //     })
+      // })
     },
     likePost(post) {
       console.log("Liking post with ID " + post.id);
-      post.likeCount += 1;
+      this.LIKE_POST(post);
+      // return new Promise((resolve, reject) => {
+      //   axios({
+      //     url: '/api/likepost/' + post.id,
+      //     data: user,
+      //     method: 'PUT'
+      //   })
+      //     .then(resp => {
+      //       this.LIKE_POST(resp.data.post);
+      //       resolve(resp);
+      //     })
+      //     .catch(err => {
+      //       reject(err);
+      //     })
+      // })
     },
     updatePost(postIndex, title, content) {
-      var post = this.$store.getters.posts[postIndex];
+      var post = this.posts[postIndex];
       console.log("Updating post with ID " + post.id + " to title " + title + " and content " + content);
-      post.title = title;
-      post.content = content;
+      this.UPDATE_POST({ post, title, content });
+      // var data = {title: title, content: content};
+      // return new Promise((resolve, reject) => {
+      //   axios({
+      //     url: '/api/posts/' + post.id,
+      //     data: data,
+      //     method: 'PUT'
+      //   })
+      //     .then(resp => {
+      //       this.UPDATE_POST(resp.data.post);
+      //       resolve(resp);
+      //     })
+      //     .catch(err => {
+      //       reject(err);
+      //     })
+      // })
     },
     deletePost(postId) {
       console.log("Deleting post with ID " + postId);
-      for (var i=0; i<this.$store.getters.posts.length; i++) {
-        if (this.$store.getters.posts[i].id == postId) {
-          this.$store.getters.posts.splice(i, 1);
-          return;
-        }
+      this.DELETE_POST(postId);
+      // return new Promise((resolve, reject) => {
+      //   axios({
+      //     url: '/api/posts/' + postId,
+      //     method: 'DELETE'
+      //   })
+      //     .then(resp => {
+      //       this.DELETE_POST(resp.data.postId);
+      //       resolve(resp);
+      //     })
+      //     .catch(err => {
+      //       reject(err);
+      //     })
+      // })
+    },
+    refreshPostsIfEmpty() {
+      if (this.posts.length == 0) {
+        this.getPosts();
       }
-      console.log("Error deleting post with ID " + postId);
     },
     handleCreatePost(evt) {
       evt.preventDefault();
@@ -150,7 +250,7 @@ export default {
     },
     handleUpdatePost(postIndex) {
       this.createOrUpdateMode = "update";
-      var post = this.$store.getters.posts[postIndex];
+      var post = this.posts[postIndex];
       this.updatedPostIndex = postIndex;
       this.form.title = post.title;
       this.form.content = post.content;
@@ -238,6 +338,12 @@ export default {
     modePretty() {
       return this.createOrUpdateMode == "create" ? "Create" : "Update";
     }
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      // Code that will run only after the entire view has been rendered
+      this.refreshPostsIfEmpty();
+    })
   }
 }
 </script>
