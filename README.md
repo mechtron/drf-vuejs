@@ -12,6 +12,9 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
 
 - VueJS
 - BootstrapVue
+- Vue Router
+- Vuex
+- Axios
 
 #### Backend
 
@@ -19,11 +22,12 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
 - Django REST framework
 - `django-allauth` (login via Google and GitHub via OAuth2)
 - SQLite DB
+- Swagger UI
 
 #### DevOps
 
 - Docker container images
-- Helm chart for Kubernetes deployment
+- Helm chart for Kubernetes deployments
 - GitHub Actions workflow
 
 ## Setup
@@ -63,12 +67,15 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
 
 #### Frontend
 
-Coming soon
+1. Change into the Web base directory: `cd web`
+1. Install Node dependencies: `npm install`
+1. Start the development server: `npm run serve`
+1. View at [http://localhost:8080](http://localhost:8080)
 
-## API Usage
+## Example API Usage
 
 1. Get your OAuth URL: `curl -I http://localhost:8000/auth/<provider>/url/` where `<provider>` is `github` or `google`
-1. You will get a 302 re-direct URL from your 3rd party OAuth2 provider to the frontend. 
+1. You will get a 302 redirect URL from your 3rd party OAuth2 provider to the frontend.
     Example callback: `https://frontend/auth/<provider>?code=a1e3ccca86ab0645cd92&state=MQ1CQVhgpSV4`
 1. Get an auth token: `curl -X POST localhost:8000/auth/<provider>/token/ -d code=a1e3ccca86ab0645cd92`
     Example response: `{"key":"2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"}`
