@@ -20,10 +20,10 @@ async function getOauthAuthorizeUrl() {
   //   // always executed
   // });
   let res = await axios.get('http://127.0.0.1:8000/auth/google/url/', {
-    headers: {
-      "Access-Control-Allow-Origin": "*"
-    },
-    crossdomain: true,
+    // headers: {
+    //   "Access-Control-Allow-Origin": "*"
+    // },
+    // crossdomain: true
   });
   console.log(res.data);
 }
@@ -32,17 +32,18 @@ export default new Vuex.Store({
   state: {
     status: '',
     user: {
-      isLoggedIn: true,
-      username: "mechtron",
+      isLoggedIn: false,
+      username: '',
       token: localStorage.getItem('token') || '',
     },
     posts: []
   },
   mutations: {
-    LOGIN_SUCCES(state, token, user) {
+    LOGIN_SUCCESSS(state, token, user) {
       state.status = 'success';
+      state.user.isLoggedIn = true;
       state.user.token = token;
-      state.user.username = user;
+      state.user.username = user.username;
     },
     LOGIN_ERROR(state) {
       state.status = 'error';
@@ -84,7 +85,7 @@ export default new Vuex.Store({
         })
           .then(resp => {
             const user = resp.data
-            commit('LOGIN_SUCCES', {token, user})
+            commit('LOGIN_SUCCESS', {token, user})
             resolve(resp)
           })
           .catch(err => {
@@ -109,7 +110,7 @@ export default new Vuex.Store({
           //     const token = resp.data.auth_token
           //     const user = resp.data
           //     localStorage.setItem('token', token)
-          //     commit('LOGIN_SUCCES', {token, user})
+          //     commit('LOGIN_SUCCESS', {token, user})
           //     resolve(resp)
           //   })
           //   .catch(err => {
@@ -125,12 +126,9 @@ export default new Vuex.Store({
     },
     // logout({ commit }, oAuthProvider) {
     logout(state, oAuthProvider) {
-      console.log(oAuthProvider);
       // return new Promise((resolve, reject) => {
         if (oAuthProvider == 'google') {
           console.log("Logging-out via Google..");
-          var authorize_url = getOauthAuthorizeUrl();
-          console.log(authorize_url);
           // axios({
           //   url: '/api/auth/logout',
           //   data: user,
