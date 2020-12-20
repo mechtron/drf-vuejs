@@ -23,19 +23,9 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getSelf',
       'login',
       'logout'
-    ]),
-    detectSession() {
-      if (self.user != null && self.user.token != '') {
-        console.log("Previous session detected..");
-        self.getSelf(self.user.token);
-      }
-    }
-  },
-  mounted() {
-    this.detectSession();
+    ])
   }
 }
 </script>
