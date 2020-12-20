@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Just a moment...</p>
+    <b-spinner label="Loading..."></b-spinner>
   </div>
 </template>
 
