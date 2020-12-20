@@ -5,29 +5,6 @@ import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex)
 
-async function getOauthAuthorizeUrl() {
-  // axios.get('../api/auth/google/url/')
-  // axios.get('localhost:8000/auth/google/url/')
-  // .then((response) => {
-  //   console.log(response.data);
-  //   // this.fields = response.data;
-  //   // this.top10 = response.data;
-  // })
-  // .catch(function(error) {
-  //   console.log(error);
-  // })
-  // .then(function() {
-  //   // always executed
-  // });
-  let res = await axios.get('http://127.0.0.1:8000/auth/google/url/', {
-    // headers: {
-    //   "Access-Control-Allow-Origin": "*"
-    // },
-    // crossdomain: true
-  });
-  console.log(res.data);
-}
-
 export default new Vuex.Store({
   state: {
     status: '',
@@ -95,34 +72,13 @@ export default new Vuex.Store({
           })
       })
     },
-    // login({ commit }, oAuthProvider) {
     login(state, oAuthProvider) {
-      // return new Promise((resolve, reject) => {
-        if (oAuthProvider == 'google') {
-          console.log("Logging in via Google..");
-          var authorize_url = getOauthAuthorizeUrl();
-          console.log(authorize_url);
-          // axios({
-          //   url: '/api/auth/login/google',
-          //   method: 'GET'
-          // })
-          //   .then(resp => {
-          //     const token = resp.data.auth_token
-          //     const user = resp.data
-          //     localStorage.setItem('token', token)
-          //     commit('LOGIN_SUCCESS', {token, user})
-          //     resolve(resp)
-          //   })
-          //   .catch(err => {
-          //     commit('LOGIN_ERROR', err)
-          //     localStorage.removeItem('token')
-          //     reject(err)
-          //   })
-          // })
-        } else {
-          console.log('Unexpected oAuthProvider: ' + oAuthProvider);
-        }
-      // })
+      if (oAuthProvider == 'google') {
+        console.log("Logging in via Google..");
+        window.location = "http://127.0.0.1:8000/auth/google/url/";
+      } else {
+        console.log('Unexpected oAuthProvider: ' + oAuthProvider);
+      }
     },
     // logout({ commit }, oAuthProvider) {
     logout(state, oAuthProvider) {

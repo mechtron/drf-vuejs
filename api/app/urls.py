@@ -38,7 +38,7 @@ def github_callback(request):
 
 def google_callback(request):
     params = urllib.parse.urlencode(request.GET)
-    return redirect(f'https://frontend/auth/google?{params}')
+    return redirect(f'http://127.0.0.1:8080/auth/google?{params}')
 
 
 schema_view = get_schema_view(
