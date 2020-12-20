@@ -84,3 +84,8 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
     ```json
     {"pk":2,"username":"example","email":"you@example.com","first_name":"Example","last_name":"User"}
     ```
+1. Logout: `curl localhost:8000/auth/logout/ -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"`
+    Example response:
+    ```json
+    {"detail":"Successfully logged out."}
+    ```
