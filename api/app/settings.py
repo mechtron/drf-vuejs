@@ -62,11 +62,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:8000',
+CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8080',
-    'https://accounts.google.com',
-]
+    'http://localhost:8080',
+    'https://accounts.google.com'
+)
 
 ROOT_URLCONF = 'app.urls'
 
