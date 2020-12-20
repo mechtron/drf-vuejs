@@ -46,12 +46,16 @@ export default {
     },
     decodeParams() {
       let oAuthProvider = this.$route.params.provider
+      let params = new URLSearchParams(this.$route.params.params)
+      if (oAuthProvider == null || params.get("code") == null) {
+        this.$router.push('/')
+        return
+      }
       if (oAuthProvider != 'google') {
         console.log('Unexpected oAuthProvider: ' + oAuthProvider)
         this.$router.push('/')
         return
       }
-      let params = new URLSearchParams(this.$route.params.params)
       this.getSessionToken(params.get("code"))
     }
   },
