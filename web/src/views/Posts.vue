@@ -125,14 +125,14 @@ export default {
           author: "admin",
           dateCreated: "2020-11-21T23:30:00.000Z",
           title: "First!!!1one",
-          content: "First post is the best post",
+          content: "First post is best post",
           likeCount: 2
         },
         {
           id: 2,
           author: "mechtron",
           dateCreated: "2020-12-03T23:45:00.000Z",
-          title: "Best post ever",
+          title: "Don't miss out!",
           content: "The meaning of life will blow your mind",
           likeCount: 3
         }
