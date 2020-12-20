@@ -5,7 +5,7 @@ import Home from './views/Home.vue'
 import Posts from './views/Posts.vue'
 import HOF from './views/HOF.vue'
 import About from './views/About.vue'
-import Login from './views/Login.vue'
+import Auth from './components/Auth.vue'
 
 Vue.use(VueRouter)
 
@@ -31,9 +31,9 @@ const routes = [
     component: About
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
+    path: '/auth/:provider/:params',
+    name: 'Auth',
+    component: Auth
   }
 ]
 
