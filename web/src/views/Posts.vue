@@ -19,7 +19,7 @@
           <div v-for="(item, index) in $store.getters.posts" :key="item.id">
             <b-card :title="item.title" :sub-title="item.content">
               <b-card-text>
-                Posted {{getTimeSince(item.dateCreated)}} ago by {{item.author}}
+                Posted {{getTimeSince(item.date_created)}} ago by {{item.author}}
               </b-card-text>
               <b-row>
                 <b-col>
@@ -30,7 +30,7 @@
                 </b-col>
                 <b-col>
                   <b-button class="mr-1" variant="primary" @click="likePost(item)">
-                    <b-badge variant="light">{{item.likeCount}}</b-badge>
+                    <b-badge variant="light">{{item.like_count}}</b-badge>
                     Nice <b-icon icon="hand-thumbs-up"></b-icon>
                   </b-button>
                 </b-col>
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   computed: {
@@ -119,72 +120,39 @@ export default {
     ]),
     getPosts() {
       console.log("Getting posts..");
-      var posts = [
-        {
-          id: 1,
-          author: "admin",
-          dateCreated: "2020-11-21T23:30:00.000Z",
-          title: "First!!!1one",
-          content: "First post is best post",
-          likeCount: 2
-        },
-        {
-          id: 2,
-          author: "mechtron",
-          dateCreated: "2020-12-03T23:45:00.000Z",
-          title: "Don't miss out!",
-          content: "The meaning of life will blow your mind",
-          likeCount: 3
-        }
-      ]
-      this.REFRESH_POSTS(posts);
-      // return new Promise((resolve, reject) => {
-      //   axios({
-      //     url: '/api/posts',
-      //     method: 'GET'
-      //   })
-      //     .then(resp => {
-      //       this.REFRESH_POSTS(resp.data.posts)
-      //       resolve(resp);
-      //     })
-      //     .catch(err => {
-      //       console.log("Error getting posts: " + err)
-      //       reject(err);
-      //     })
-      // })
+      return new Promise((resolve, reject) => {
+      axios('/posts')
+        .then(resp => {
+          this.REFRESH_POSTS(resp.data)
+          resolve(resp)
+        })
+        .catch(err => {
+          console.log(`Error getting posts: ${err}`)
+          reject(err)
+        })
+      })
     },
     createPost(title, content) {
-      console.log("Creating a new post with title " + title + " and content " + content);
-      var nextId = 0;
-      if (this.posts.length > 0) {
-        nextId = this.posts[this.posts.length - 1].id + 1;
-      }
-      var post = {
-        id: nextId,
-        author: this.user.username,
-        dateCreated: new Date().toISOString(),
-        title: title,
-        content: content,
-        likeCount: 0
-      }
-      this.CREATE_POST(post);
-      // return new Promise((resolve, reject) => {
-      //   axios({
-      //     url: '/api/posts',
-      //     data: user,
-      //     method: 'POST'
-      //   })
-      //     .then(resp => {
-      //       this.CREATE_POST(resp.data.post);
-      //       resolve(resp);
-      //     })
-      //     .catch(err => {
-      //       reject(err);
-      //     })
-      // })
+      console.log(`Creating a new post with title ${title} and content ${content}`);
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/post',
+          method: 'POST',
+          headers: {'Authorization': `Token ${this.user.token}`},
+          data: {title: title, content: content}
+        })
+          .then(resp => {
+            this.CREATE_POST(resp.data)
+            resolve(resp)
+          })
+          .catch(err => {
+            console.log(`Error creating post: ${err}`)
+            reject(err)
+          })
+      })
     },
     likePost(post) {
-      console.log("Liking post with ID " + post.id);
+      console.log(`Liking post with ID ${post.id}`);
       this.LIKE_POST(post);
       // return new Promise((resolve, reject) => {
       //   axios({
@@ -202,45 +170,46 @@ export default {
       // })
     },
     updatePost(postIndex, title, content) {
-      var post = this.posts[postIndex];
-      console.log("Updating post with ID " + post.id + " to title " + title + " and content " + content);
-      this.UPDATE_POST({ post, title, content });
-      // var data = {title: title, content: content};
-      // return new Promise((resolve, reject) => {
-      //   axios({
-      //     url: '/api/posts/' + post.id,
-      //     data: data,
-      //     method: 'PUT'
-      //   })
-      //     .then(resp => {
-      //       this.UPDATE_POST(resp.data.post);
-      //       resolve(resp);
-      //     })
-      //     .catch(err => {
-      //       reject(err);
-      //     })
-      // })
+      let post = this.posts[postIndex]
+      console.log(`Updating post with ID ${post.id} to title ${title} and content ${content}`)
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `/post/${post.id}/`,
+          method: 'PUT',
+          headers: {'Authorization': `Token ${this.user.token}`},
+          data: {title: title, content: content}
+        })
+          .then(resp => {
+            this.UPDATE_POST({ post, title, content })
+            resolve(resp)
+          })
+          .catch(err => {
+            console.log(`Error updating post: ${err}`)
+            reject(err)
+          })
+      })
     },
     deletePost(postId) {
-      console.log("Deleting post with ID " + postId);
-      this.DELETE_POST(postId);
-      // return new Promise((resolve, reject) => {
-      //   axios({
-      //     url: '/api/posts/' + postId,
-      //     method: 'DELETE'
-      //   })
-      //     .then(resp => {
-      //       this.DELETE_POST(resp.data.postId);
-      //       resolve(resp);
-      //     })
-      //     .catch(err => {
-      //       reject(err);
-      //     })
-      // })
+      console.log(`Deleting post with ID ${postId}`);
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `/post/${postId}/`,
+          method: 'DELETE',
+          headers: {'Authorization': `Token ${this.user.token}`},
+        })
+          .then(resp => {
+            this.DELETE_POST(postId)
+            resolve(resp)
+          })
+          .catch(err => {
+            console.log(`Error deleting post: ${err}`)
+            reject(err)
+          })
+      })
     },
     refreshPostsIfEmpty() {
       if (this.posts.length == 0) {
-        this.getPosts();
+        this.getPosts()
       }
     },
     handleCreatePost(evt) {
@@ -257,7 +226,7 @@ export default {
       this.showModal();
     },
     handleDeletePost(post) {
-      this.$bvModal.msgBoxConfirm('Are you sure that you want to delete the post with title "' + post.title + '"', {
+      this.$bvModal.msgBoxConfirm(`Are you sure that you want to delete the post with title "${post.title}"`, {
         title: 'Confirm deletion',
         okVariant: 'danger',
         okTitle: 'Yes',
@@ -272,7 +241,7 @@ export default {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(`Error deleting post: ${err}`)
       })
     },
     getTimeSince(date_string) {

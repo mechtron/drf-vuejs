@@ -24,13 +24,11 @@ export default {
       'LOGIN_ERROR'
     ]),
     getSessionToken(oAuthCode) {
-      console.log("Getting session token..")
+      console.log('Getting session token..')
       axios({
-        url: 'http://127.0.0.1:8000/auth/google/token/',
+        url: '/auth/google/token/',
         method: 'POST',
-        data: {
-          code: oAuthCode
-        }
+        data: {code: oAuthCode}
       })
         .then(resp => {
           const token = resp.data.key
@@ -39,7 +37,7 @@ export default {
           this.$router.push('/posts')
         })
         .catch(err => {
-          console.log("Error getting session token: " + err)
+          console.log(`Error getting session token: ${err}`)
           this.LOGIN_ERROR()
           this.$router.push('/')
         })
@@ -52,7 +50,7 @@ export default {
         return
       }
       if (oAuthProvider != 'google') {
-        console.log('Unexpected oAuthProvider: ' + oAuthProvider)
+        console.log(`Unexpected oAuthProvider: ${oAuthProvider}`)
         this.$router.push('/')
         return
       }
