@@ -9,8 +9,15 @@ from django.shortcuts import redirect
 from django.urls import include, path, reverse
 from rest_auth.registration.views import SocialLoginView
 from rest_framework import permissions
+import coreapi
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+
+from posts.views import (
+    PostCreate,
+    PostList,
+    PostRetrieveUpdateDelete,
+)
 
 
 class GitHubLogin(SocialLoginView):
@@ -60,7 +67,9 @@ urlpatterns = [
     path('auth/google/callback/', google_callback, name='google_callback'),
     path('auth/google/url/', google_views.oauth2_login),
     path('auth/google/token/', GoogleLogin.as_view()),
-    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('post', PostCreate.as_view()),
+    path('post/<int:pk>/', PostRetrieveUpdateDelete.as_view()),
+    path('posts', PostList.as_view()),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
