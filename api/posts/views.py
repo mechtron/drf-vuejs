@@ -29,6 +29,7 @@ class PostCreate(CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         response_data = {
             'id': created_post.id,
+            'date_created': created_post.date_created,
             'author': created_post.author.username,
             'title': created_post.title,
             'content': created_post.content,
