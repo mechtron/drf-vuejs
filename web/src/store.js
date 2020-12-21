@@ -70,11 +70,9 @@ export default new Vuex.Store({
       if (oAuthProvider == 'google') {
         console.log("Logging-out via Google..");
         axios({
-          url: 'http://127.0.0.1:8000/auth/logout/',
+          url: '/auth/logout/',
           method: 'POST',
-          headers: {
-            'Authorization': `Token ${state.user.token}`
-          }
+          headers: {'Authorization': `Token ${state.user.token}`}
         })
           .then(resp => {
             console.log(`Logout result: ${resp.data.detail}`)
@@ -90,10 +88,8 @@ export default new Vuex.Store({
       }
     },
     getSelf({ commit, state }) {
-      axios('http://127.0.0.1:8000/auth/user/', {
-        headers: {
-          'Authorization': `Token ${state.user.token}`
-        }
+      axios('/auth/user/', {
+        headers: {'Authorization': `Token ${state.user.token}`}
       })
         .then(resp => {
           commit('UPDATE_SELF', resp.data.username)
@@ -101,8 +97,6 @@ export default new Vuex.Store({
         .catch(err => {
           console.log(`Error looking-up self: ${err}`)
         })
-    },
-    getPosts() {
     }
   },
   getters: {
