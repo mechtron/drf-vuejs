@@ -41,7 +41,7 @@ export default new Vuex.Store({
       state.posts = posts;
     },
     LIKE_POST(state, post) {
-      post.likeCount += 1;
+      post.like_count += 1;
     },
     UPDATE_POST(state, { post, title, content }) {
       post.title = title;

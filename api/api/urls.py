@@ -15,6 +15,7 @@ from drf_yasg import openapi
 
 from posts.views import (
     PostCreate,
+    PostLike,
     PostList,
     PostRetrieveUpdateDelete,
 )
@@ -67,6 +68,7 @@ urlpatterns = [
     path('auth/google/callback/', google_callback, name='google_callback'),
     path('auth/google/url/', google_views.oauth2_login),
     path('auth/google/token/', GoogleLogin.as_view()),
+    path('like/<int:post_id>/', PostLike.as_view()),
     path('post', PostCreate.as_view()),
     path('post/<int:pk>/', PostRetrieveUpdateDelete.as_view()),
     path('posts', PostList.as_view()),
