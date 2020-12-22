@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'posts',
+    'healthcheck',
 ]
 
 MIDDLEWARE = [
