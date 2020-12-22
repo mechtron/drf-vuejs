@@ -45,7 +45,7 @@
     <b-modal centered
       id="create-update-modal"
       ref="modal"
-      :title="modePretty() + ' post'"
+      :title="getModePretty() + ' post'"
       ok-title="Submit"
       @hidden="resetModal"
       @ok="handleSubmit"
@@ -84,6 +84,7 @@
 <script>
 import axios from 'axios'
 import { mapGetters, mapMutations } from 'vuex'
+import common from '../common'
 export default {
   computed: {
     ...mapGetters(["user", "posts"]),
@@ -118,6 +119,7 @@ export default {
       'REFRESH_POSTS',
       'UPDATE_POST'
     ]),
+    getTimeSince: common.getTimeSince,
     getPosts() {
       console.log("Getting posts..");
       return new Promise((resolve, reject) => {
@@ -241,31 +243,6 @@ export default {
         console.log(`Error deleting post: ${err}`)
       })
     },
-    getTimeSince(date_string) {
-      var date = Date.parse(date_string);
-      var seconds = Math.floor((new Date() - date) / 1000);
-      var interval = seconds / 31536000;
-      if (interval > 1) {
-        return Math.floor(interval) + " years";
-      }
-      interval = seconds / 2592000;
-      if (interval > 1) {
-        return Math.floor(interval) + " months";
-      }
-      interval = seconds / 86400;
-      if (interval > 1) {
-        return Math.floor(interval) + " days";
-      }
-      interval = seconds / 3600;
-      if (interval > 1) {
-        return Math.floor(interval) + " hours";
-      }
-      interval = seconds / 60;
-      if (interval > 1) {
-        return Math.floor(interval) + " minutes";
-      }
-      return Math.floor(seconds) + " seconds";
-    },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
       return valid;
@@ -301,7 +278,7 @@ export default {
     toggleModal() {
       this.$bvModal.toggle('create-update-modal');
     },
-    modePretty() {
+    getModePretty() {
       return this.createOrUpdateMode == "create" ? "Create" : "Update";
     }
   },
