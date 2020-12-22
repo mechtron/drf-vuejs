@@ -74,6 +74,8 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
 
 ## Example API Usage
 
+#### Authentication
+
 1. Get your OAuth URL: `curl -I http://localhost:8000/auth/<provider>/url/` where `<provider>` is `github` or `google`
 1. You will get a 302 redirect URL from your 3rd party OAuth2 provider to the frontend.
     Example callback: `https://frontend/auth/<provider>?code=a1e3ccca86ab0645cd92&state=MQ1CQVhgpSV4`
@@ -89,3 +91,12 @@ Backend, frontend, IaC and automation to serve as a foundation for rapid-prototy
     ```json
     {"detail":"Successfully logged out."}
     ```
+
+#### Posts
+
+1. Get recent Posts: `curl localhost:8000/posts`
+1. Get HOF Posts: `curl localhost:8000/hof`
+1. Like a Post: `curl localhost:8000/like/<id>/` where `<id>` is the Post ID
+1. Create a Post (session required): `curl -X POST -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba" localhost:8000/post -d title="Test title" -d content="Test content"`
+1. Edit a Post (session required): `curl -X PUT -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba" localhost:8000/post/<id>/ -d title="Updated title" -d content="Updated content"` 
+1. Delete a Post (session required): `curl -X DELETE -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba" localhost:8000/post/<id>/`
