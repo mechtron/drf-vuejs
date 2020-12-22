@@ -76,3 +76,11 @@ class PostLike(APIView):
             return Response(status=status.HTTP_201_CREATED)
         except:
             raise Http404
+
+
+class PostsHof(APIView):
+    permission_classes = ()
+
+    def get(self, request):
+        top_posts = Post.objects.values().order_by('-like_count')[:10]
+        return Response(top_posts, status=status.HTTP_200_OK)
