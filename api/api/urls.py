@@ -18,6 +18,7 @@ from posts.views import (
     PostLike,
     PostList,
     PostRetrieveUpdateDelete,
+    PostsHof,
 )
 
 
@@ -68,6 +69,7 @@ urlpatterns = [
     path('auth/google/callback/', google_callback, name='google_callback'),
     path('auth/google/url/', google_views.oauth2_login),
     path('auth/google/token/', GoogleLogin.as_view()),
+    path('hof', PostsHof.as_view()),
     path('like/<int:post_id>/', PostLike.as_view()),
     path('post', PostCreate.as_view()),
     path('post/<int:pk>/', PostRetrieveUpdateDelete.as_view()),
