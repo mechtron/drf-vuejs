@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
@@ -6,6 +7,7 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from posts.authorization import IsOwnerOfSpecifiedPost
 from posts.models import Post
@@ -61,3 +63,16 @@ class PostRetrieveUpdateDelete(RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.deleted = True
         instance.save()
+
+
+class PostLike(APIView):
+    permission_classes = ()
+
+    def get(self, request, post_id):
+        try:
+            post = Post.objects.get(id=post_id)
+            post.like_count += 1
+            post.save()
+            return Response(status=status.HTTP_201_CREATED)
+        except:
+            raise Http404

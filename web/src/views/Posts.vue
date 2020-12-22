@@ -153,21 +153,18 @@ export default {
     },
     likePost(post) {
       console.log(`Liking post with ID ${post.id}`);
-      this.LIKE_POST(post);
-      // return new Promise((resolve, reject) => {
-      //   axios({
-      //     url: '/api/likepost/' + post.id,
-      //     data: user,
-      //     method: 'PUT'
-      //   })
-      //     .then(resp => {
-      //       this.LIKE_POST(resp.data.post);
-      //       resolve(resp);
-      //     })
-      //     .catch(err => {
-      //       reject(err);
-      //     })
-      // })
+      return new Promise((resolve, reject) => {
+        axios(`/like/${post.id}/`)
+          .then(resp => {
+            this.LIKE_POST(post)
+            resolve(resp)
+          })
+          .catch(err => {
+            console.log(err)
+            console.log(`Error liking post: ${err}`)
+            reject(err)
+          })
+      })
     },
     updatePost(postIndex, title, content) {
       let post = this.posts[postIndex]
