@@ -13,6 +13,7 @@ import coreapi
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from healthcheck.views import HealthCheck
 from posts.views import (
     PostCreate,
     PostLike,
@@ -69,6 +70,7 @@ urlpatterns = [
     path('auth/google/callback/', google_callback, name='google_callback'),
     path('auth/google/url/', google_views.oauth2_login),
     path('auth/google/token/', GoogleLogin.as_view()),
+    path('health', HealthCheck.as_view()),
     path('hof', PostsHof.as_view()),
     path('like/<int:post_id>/', PostLike.as_view()),
     path('post', PostCreate.as_view()),
