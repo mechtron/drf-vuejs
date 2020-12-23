@@ -125,7 +125,7 @@ export default {
       return new Promise((resolve, reject) => {
       axios('/posts')
         .then(resp => {
-          this.REFRESH_POSTS(resp.data)
+          this.REFRESH_POSTS(resp.data.results)
           resolve(resp)
         })
         .catch(err => {
