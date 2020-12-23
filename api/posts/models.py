@@ -30,4 +30,4 @@ class Post(models.Model):
     objects = SoftDeleteManager()
 
     class Meta:
-        ordering = ('date_created',)
+        ordering = ('-date_created',)
