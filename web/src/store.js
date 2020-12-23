@@ -35,7 +35,7 @@ export default new Vuex.Store({
       state.user.username = '';
     },
     CREATE_POST(state, post) {
-      state.posts.push(post);
+      state.posts.unshift(post);
     },
     REFRESH_POSTS(state, posts) {
       state.posts = posts;
