@@ -14,7 +14,8 @@ export default new Vuex.Store({
       username: '',
       token: localStorage.getItem('token') || '',
     },
-    posts: []
+    posts: [],
+    postsNextPage: ''
   },
   mutations: {
     LOGIN_SUCCESS(state, token) {
@@ -39,6 +40,9 @@ export default new Vuex.Store({
     },
     REFRESH_POSTS(state, posts) {
       state.posts = posts;
+    },
+    ADD_PAGE_OF_POSTS(state, posts) {
+      state.posts.push(...posts);
     },
     LIKE_POST(state, post) {
       post.like_count += 1;

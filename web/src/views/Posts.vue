@@ -78,6 +78,7 @@
         </b-form-group>
       </form>
     </b-modal>
+    <div v-infinite-scroll="loadMorePosts" infinite-scroll-disabled="busy" infinite-scroll-distance="10"></div>
   </div>
 </template>
 
@@ -103,6 +104,8 @@ export default {
   },
   data () {
     return {
+      busy: false,
+      pageCount: 0,
       createOrUpdateMode: "create",
       updatedPostIndex: null,
       form: {
@@ -113,6 +116,7 @@ export default {
   },
   methods: {
     ...mapMutations([
+      'ADD_PAGE_OF_POSTS',
       'CREATE_POST',
       'DELETE_POST',
       'LIKE_POST',
@@ -123,16 +127,39 @@ export default {
     getPosts() {
       console.log("Getting posts..");
       return new Promise((resolve, reject) => {
-      axios('/posts')
-        .then(resp => {
-          this.REFRESH_POSTS(resp.data.results)
-          resolve(resp)
-        })
-        .catch(err => {
-          console.log(`Error getting posts: ${err}`)
-          reject(err)
-        })
+        axios('/posts')
+          .then(resp => {
+            this.REFRESH_POSTS(resp.data.results)
+            this.postsNextPage = resp.data.next
+            resolve(resp)
+          })
+          .catch(err => {
+            console.log(`Error getting posts: ${err}`)
+            reject(err)
+          })
       })
+    },
+    loadMorePosts: function() {
+      this.busy = true;
+      setTimeout(() => {
+        if (this.postsNextPage != '') {
+          console.log("Getting new posts..");
+          return new Promise((resolve, reject) => {
+            axios(this.postsNextPage)
+              .then(resp => {
+                this.ADD_PAGE_OF_POSTS(resp.data.results)
+                this.busy = false
+                this.postsNextPage = resp.data.next
+                resolve(resp)
+              })
+              .catch(err => {
+                console.log(`Error getting new posts: ${err}`)
+                this.busy = false
+                reject(err)
+              })
+          })
+        }
+      }, 2000);
     },
     createPost(title, content) {
       console.log(`Creating a new post with title ${title} and content ${content}`);
