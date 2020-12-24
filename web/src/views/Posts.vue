@@ -145,7 +145,7 @@ export default {
         this.busy = true
       }
       setTimeout(() => {
-        // return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           if (this.postsPagination.nextPage != '' && this.postsPagination.nextPage != null) {
             console.log("Getting more posts..")
             axios(this.postsPagination.nextPage)
@@ -158,23 +158,25 @@ export default {
                 } else {
                   this.postsPagination.nextPage = resp.data.next
                 }
+                resolve()
               })
               .catch(err => {
                 this.busy = false
                 if (err.response.status == 404) {
                   console.log("You've reached the end of the road")
                   this.ALL_POSTS_LOADED()
-                  // resolve()
+                  resolve()
                 } else {
                   console.log(`Error getting more posts: ${err}`)
-                  // reject(err)
+                  reject(err)
                 }
               })
           } else {
             console.log("There's nothing more to know")
             this.busy = false
+            resolve()
           }
-        // })
+        })
       }, 1000);
     },
     createPost(title, content) {
