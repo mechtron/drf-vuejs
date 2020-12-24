@@ -78,7 +78,12 @@
         </b-form-group>
       </form>
     </b-modal>
-    <div v-infinite-scroll="loadMorePosts" infinite-scroll-immediate-check="false" infinite-scroll-disabled="busy" infinite-scroll-distance="10"></div>
+    <div v-infinite-scroll="loadMorePosts"
+      infinite-scroll-immediate-check="false"
+      infinite-scroll-disabled="busy"
+      infinite-scroll-distance="10"
+      infinite-scroll-throttle-delay="1000"
+    ></div>
     <b-spinner label="Loading more posts..." v-if="busy"></b-spinner>
   </div>
 </template>
