@@ -9,8 +9,7 @@ import requests
 
 API_HOST = os.environ.get('API_HOST', 'http://127.0.0.1:8000')
 API_AUTH_TOKEN = os.environ.get('API_AUTH_TOKEN', '')
-
-_NUMBER_OF_POSTS_TO_CREATE = 100
+NUMBER_OF_POSTS_TO_CREATE = int(os.environ.get('NUMBER_OF_POSTS_TO_CREATE', 100))
 _NUMBER_OF_LIKES_MIN = 0
 _NUMBER_OF_LIKES_MAX = 100
 
@@ -54,7 +53,7 @@ def like_post(post_id):
 
 
 def main():
-    for i in range(0, _NUMBER_OF_POSTS_TO_CREATE):
+    for i in range(0, NUMBER_OF_POSTS_TO_CREATE):
         post = create_post()
         like_count = random.randint(_NUMBER_OF_LIKES_MIN, _NUMBER_OF_LIKES_MAX)
         for _ in range(like_count):
@@ -64,7 +63,7 @@ def main():
             "{post_id} and liked it {like_count} times"
         ).format(
             current=i+1,
-            count=_NUMBER_OF_POSTS_TO_CREATE,
+            count=NUMBER_OF_POSTS_TO_CREATE,
             post_id=post["id"],
             like_count=like_count,
         ))
