@@ -78,7 +78,8 @@
         </b-form-group>
       </form>
     </b-modal>
-    <div v-infinite-scroll="loadMorePosts" infinite-scroll-disabled="busy" infinite-scroll-distance="10"></div>
+    <div v-infinite-scroll="loadMorePosts" infinite-scroll-immediate-check="false" infinite-scroll-disabled="busy" infinite-scroll-distance="10"></div>
+    <b-spinner label="Loading more posts..." v-if="busy"></b-spinner>
   </div>
 </template>
 
@@ -88,7 +89,7 @@ import { mapGetters, mapMutations } from 'vuex'
 import common from '../common'
 export default {
   computed: {
-    ...mapGetters(["user", "posts"]),
+    ...mapGetters(["user", "posts", "postsPagination"]),
     formTitleLength() {
       if (this.form.title == null) {
         return false;
@@ -105,7 +106,6 @@ export default {
   data () {
     return {
       busy: false,
-      pageCount: 0,
       createOrUpdateMode: "create",
       updatedPostIndex: null,
       form: {
@@ -117,6 +117,7 @@ export default {
   methods: {
     ...mapMutations([
       'ADD_PAGE_OF_POSTS',
+      'ALL_POSTS_LOADED',
       'CREATE_POST',
       'DELETE_POST',
       'LIKE_POST',
@@ -130,7 +131,7 @@ export default {
         axios('/posts')
           .then(resp => {
             this.REFRESH_POSTS(resp.data.results)
-            this.postsNextPage = resp.data.next
+            this.postsPagination.nextPage = resp.data.next
             resolve(resp)
           })
           .catch(err => {
@@ -140,26 +141,41 @@ export default {
       })
     },
     loadMorePosts: function() {
-      this.busy = true;
+      if (this.postsPagination.allPagesLoaded == false) {
+        this.busy = true
+      }
       setTimeout(() => {
-        if (this.postsNextPage != '') {
-          console.log("Getting new posts..");
-          return new Promise((resolve, reject) => {
-            axios(this.postsNextPage)
+        // return new Promise((resolve, reject) => {
+          if (this.postsPagination.nextPage != '' && this.postsPagination.nextPage != null) {
+            console.log("Getting more posts..")
+            axios(this.postsPagination.nextPage)
               .then(resp => {
-                this.ADD_PAGE_OF_POSTS(resp.data.results)
                 this.busy = false
-                this.postsNextPage = resp.data.next
-                resolve(resp)
+                this.ADD_PAGE_OF_POSTS(resp.data.results)
+                if (resp.data.next == null) {
+                  this.ALL_POSTS_LOADED()
+                  this.postsPagination.nextPage = ''
+                } else {
+                  this.postsPagination.nextPage = resp.data.next
+                }
               })
               .catch(err => {
-                console.log(`Error getting new posts: ${err}`)
                 this.busy = false
-                reject(err)
+                if (err.response.status == 404) {
+                  console.log("You've reached the end of the road")
+                  this.ALL_POSTS_LOADED()
+                  // resolve()
+                } else {
+                  console.log(`Error getting more posts: ${err}`)
+                  // reject(err)
+                }
               })
-          })
-        }
-      }, 2000);
+          } else {
+            console.log("There's nothing more to know")
+            this.busy = false
+          }
+        // })
+      }, 1000);
     },
     createPost(title, content) {
       console.log(`Creating a new post with title ${title} and content ${content}`);

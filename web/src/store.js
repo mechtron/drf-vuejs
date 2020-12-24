@@ -15,7 +15,10 @@ export default new Vuex.Store({
       token: localStorage.getItem('token') || '',
     },
     posts: [],
-    postsNextPage: ''
+    postsPagination: {
+      nextPage: '',
+      allPagesLoaded: false
+    }
   },
   mutations: {
     LOGIN_SUCCESS(state, token) {
@@ -59,6 +62,9 @@ export default new Vuex.Store({
         }
       }
       console.log("Error deleting post with ID " + postId)
+    },
+    ALL_POSTS_LOADED(state) {
+      state.postsPagination.allPagesLoaded = true
     }
   },
   actions: {
@@ -105,7 +111,8 @@ export default new Vuex.Store({
   },
   getters: {
     user: state => state.user,
-    posts: state => state.posts
+    posts: state => state.posts,
+    postsPagination: state => state.postsPagination
   },
   plugins: [
     createPersistedState({
