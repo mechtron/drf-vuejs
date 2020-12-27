@@ -8,14 +8,14 @@ release: {{ .Release.Name }}
 {{- .Release.Name | trunc 63 -}}
 {{- end -}}
 
-{{- define "api_name" -}}
+{{- define "apiName" -}}
 {{- printf "%s-%s" .Release.Name "api" | trunc 63 -}}
 {{- end -}}
 
-{{- define "db_name" -}}
+{{- define "dbName" -}}
 {{- printf "%s-%s" .Release.Name "db" | trunc 63 -}}
 {{- end -}}
 
-{{- define "web_name" -}}
+{{- define "webName" -}}
 {{- printf "%s-%s" .Release.Name "web" | trunc 63 -}}
 {{- end -}}

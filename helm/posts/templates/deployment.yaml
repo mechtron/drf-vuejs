@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "api_name" . }}
+  name: {{ template "apiName" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "release_labels" . | indent 4 }}
@@ -9,11 +9,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      name: {{ template "api_name" . }}
+      name: {{ template "apiName" . }}
   template:
     metadata:
       labels:
-        name: {{ template "api_name" . }}
+        name: {{ template "apiName" . }}
         {{- include "release_labels" . | indent 8 }}
       annotations:
         checksum/config-map: {{ include (print $.Chart.Name "/templates/config-map.yaml") . | sha256sum }}
@@ -29,16 +29,16 @@ spec:
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "api_name" . }}-secret
+                name: {{ template "apiName" . }}-secret
                 key: app-secret
           - name: MYSQL_HOSTNAME
-            value: {{ template "db_name" . }}
+            value: {{ template "dbName" . }}
           - name: MYSQL_USERNAME
             value: {{ .Values.mysql.mysqlUser }}
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ template "db_name" . }}-password
+                name: {{ template "dbName" . }}-password
                 key: mysql-password
           livenessProbe:
             httpGet:
@@ -59,7 +59,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "web_name" . }}
+  name: {{ template "webName" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "release_labels" . | indent 4 }}
@@ -67,11 +67,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      name: {{ template "web_name" . }}
+      name: {{ template "webName" . }}
   template:
     metadata:
       labels:
-        name: {{ template "web_name" . }}
+        name: {{ template "webName" . }}
         {{- include "release_labels" . | indent 8 }}
       annotations:
         checksum/config-map: {{ include (print $.Chart.Name "/templates/config-map.yaml") . | sha256sum }}

@@ -22,16 +22,16 @@ spec:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "api_name" . }}-secret
+              name: {{ template "apiName" . }}-secret
               key: app-secret
         - name: MYSQL_HOSTNAME
-          value: {{ template "db_name" . }}
+          value: {{ template "dbName" . }}
         - name: MYSQL_USERNAME
           value: {{ .Values.mysql.mysqlUser }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "db_name" . }}-password
+              name: {{ template "dbName" . }}-password
               key: mysql-password
         command:
          - "python3"
