@@ -71,7 +71,7 @@ export default new Vuex.Store({
     login(state, oAuthProvider) {
       if (oAuthProvider == 'google') {
         console.log("Logging in via Google..")
-        window.location = "http://127.0.0.1:8000/auth/google/url/"
+        window.location = `${process.env.VUE_APP_API_HOSTNAME}/auth/google/url/`
       } else {
         console.log('Unexpected oAuthProvider: ' + oAuthProvider)
       }
