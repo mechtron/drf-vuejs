@@ -48,7 +48,6 @@ jobs:
         kubevalVersion: '0.15.0'
         command: |
           helm repo add google https://charts.helm.sh/stable
-          helm repo add bitnami https://charts.bitnami.com/bitnami
           helm dependency update helm/posts
           helm upgrade \
             --install posts \
