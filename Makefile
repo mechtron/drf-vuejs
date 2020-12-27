@@ -13,3 +13,21 @@ db_create:
 
 db_migrate:
 	docker exec posts-api python3 manage.py migrate
+
+helm_upgrade_install:
+	helm upgrade --install posts --namespace=posts --create-namespace helm/posts
+
+helm_upgrade_install_secure:
+ifeq ($(API_SECRET),)
+	@echo API_SECRET must be set
+endif
+ifeq ($(MYSQL_PASSWORD),)
+	@echo MYSQL_PASSWORD must be set
+endif
+	helm upgrade --install posts --namespace=posts --create-namespace helm/posts --set api.apiSecret=$(API_SECRET) --set mysql.mysqlPassword=$(MYSQL_PASSWORD)
+
+helm_delete:
+	helm --namespace posts delete posts
+
+helm_deps:
+	helm dependency update helm/posts
