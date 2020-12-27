@@ -1,3 +1,4 @@
+import os
 import urllib.parse
 
 from allauth.socialaccount.providers.github import views as github_views
@@ -23,6 +24,12 @@ from posts.views import (
 )
 
 
+OAUTH2_CALLBACK_HOSTNAME = os.getenv(
+    'OAUTH2_CALLBACK_HOSTNAME',
+    'http://127.0.0.1:8080',
+)
+
+
 class GitHubLogin(SocialLoginView):
     adapter_class = github_views.GitHubOAuth2Adapter
     client_class = OAuth2Client
@@ -43,12 +50,12 @@ class GoogleLogin(SocialLoginView):
 
 def github_callback(request):
     params = urllib.parse.urlencode(request.GET)
-    return redirect(f'https://127.0.0.1:8080/auth/github/{params}')
+    return redirect(f'{OAUTH2_CALLBACK_HOSTNAME}/auth/github/{params}')
 
 
 def google_callback(request):
     params = urllib.parse.urlencode(request.GET)
-    return redirect(f'http://127.0.0.1:8080/auth/google/{params}')
+    return redirect(f'{OAUTH2_CALLBACK_HOSTNAME}/auth/google/{params}')
 
 
 schema_view = get_schema_view(
