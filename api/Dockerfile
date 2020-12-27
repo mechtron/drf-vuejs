@@ -1,5 +1,9 @@
 FROM python:3.9.1
 
+RUN apt update && \
+    apt install -y mariadb-client && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN pip3 install --upgrade pip
 
 COPY requirements.txt /tmp/requirements.txt

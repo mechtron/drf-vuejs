@@ -91,11 +91,28 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+def get_database_config():
+    db_mode = os.getenv('DATABASE_MODE', 'sqlite')
+    if db_mode == 'sqlite':
+        return {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    elif db_mode == 'mysql':
+        return {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'posts',
+            'USER': os.environ['MYSQL_USERNAME'],
+            'PASSWORD': os.environ['MYSQL_PASSWORD'],
+            'HOST': os.environ['MYSQL_HOSTNAME'],
+            'PORT': 3306,
+        }
+    else:
+        raise ValueError('Unexpected DATABASE_MODE')
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': get_database_config(),
 }
 
 

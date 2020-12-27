@@ -10,6 +10,7 @@ services:
     volumes:
      - ./api:/api
     environment:
+      DATABASE_MODE: mysql
       DEBUG: "false"
       MYSQL_HOSTNAME: mysql
       MYSQL_USERNAME: root
