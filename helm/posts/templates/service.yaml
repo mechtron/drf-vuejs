@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "api_name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "release_labels" . | indent 4 }}
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: api_mapping_{{ .Values.name }}
+      host: {{ .Values.app_hostname }}
+      prefix: /api/
+      service: {{ template "api_name" . }}.{{ .Release.Namespace }}:8000
+      timeout_ms: 10000
+      connect_timeout_ms: 30000
+spec:
+  type: {{ .Values.api.serviceType | default "NodePort" | quote }}
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+  selector:
+    name: {{ template "api_name" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "web_name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "release_labels" . | indent 4 }}
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: web_mapping_{{ .Values.name }}
+      host: {{ .Values.app_hostname }}
+      prefix: /
+      service: {{ template "web_name" . }}.{{ .Release.Namespace }}:80
+      timeout_ms: 10000
+      connect_timeout_ms: 30000
+spec:
+  type: {{ .Values.web.serviceType | default "NodePort" | quote }}
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    name: {{ template "web_name" . }}

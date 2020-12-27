@@ -1,0 +1,19 @@
+app_hostname: posts.k8s.sandbox.ggops.com
+
+mysql:
+  mysqlDatabase: posts
+  mysqlUser: posts
+  mysqlPassword: dbpassw0rd # use --set to override this in production
+
+api:
+  image:
+    repository: mechtron/posts-api
+    tag: latest
+  serviceType: LoadBalancer
+  apiSecret: apis3r3t # use --set to override this in production
+
+web:
+  image:
+    repository: mechtron/posts-web
+    tag: latest
+  serviceType: LoadBalancer
