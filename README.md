@@ -2,101 +2,40 @@
 
 By Corey Gale (`mechtrondev[at]gmail.com`)
 
-## Executive summary
+## What is this?
 
-Backend, frontend, IaC and automation to serve as a foundation for rapid-prototyping new apps.
+Posts is a CRUD app that allows its users to create and up-vote "Posts". Popular Posts get featured on the HOF page.
 
-## Stack
+This goal of this project is to provide complete backend, frontend and IaC to serve as a foundation to kick start building new apps.
 
-#### Frontend
+## App screens
 
-- VueJS
-- BootstrapVue
-- Vue Router
-- Vuex
-- Axios
+![This could all be yours if you fork this repo today](/docs/screenshot.gif?raw=true)
 
-#### Backend
+## Live demo
 
-- Python 3
-- Django REST framework
-- `django-allauth` (login via Google and GitHub via OAuth2)
-- SQLite DB
-- Swagger UI
+[Try it out!](https://posts.k8s.sandbox.ggops.com)
 
-#### DevOps
+## Tech stack
 
-- Docker container images
-- Helm chart for Kubernetes deployments
-- GitHub Actions workflow
+| Frontend      | Backend                              | DevOps         |
+| ------------- | ------------------------------------ | -------------- |
+| VueJS         | Python 3                             | GitHub Actions |
+| BootstrapVue  | Django REST framework                | Docker         |
+| Vue Router    | `django-allauth` (OAuth2 via Google) | Kubernetes     |
+| Vuex          | SQLite or MySQL (optional)           | Helm           |
+| Axios         | Swagger UI                           | AWS EKS        |
 
-## Setup
+## 📕 Documentation
 
-#### Backend
+Head over to the [project's docs on GitHub Pages](http://corey.tech/drf-vuejs/) to learn how to:
 
-1. Change into the API base directory: `cd api`
-1. Create a virtualenv: `python3 -m venv venv && source venv/bin/activate`
-1. Install Python dependencies: `pip3 install -r requirements.txt`
-1. Migrate the database: `python3 manage.py migrate`
-1. Create a super user: `python3 manage.py createsuperuser --email me@corey.tech --username admin`
-1. Start the API: `python3 manage.py runserver`
-1. Log into the [Django Admin web console](http://localhost:8000/admin) using the superuser created in #5
-1. Under the "Sites" section, add your site domain name(s) (`127.0.0.1` for local dev)
+- Start the dev environment
+- Make API requests (like creating and retrieving Posts)
+- Trigger database migrations
+- Build the app's Docker images
+- Use the included Helm chart to deploy the Posts app to AWS EKS
 
-###### Setup GitHub OAuth
+## What's next?
 
-1. Setup a [new OAuth app in GitHub](https://github.com/settings/applications/new) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8000/auth/github/callback/`.
-1. Under "Social Accounts", click "Add" and add a social application with the following info:
-    Name: GitHub
-    Client id: from #1
-    Secret key: from #1
-    Key: N/A
-    Sites: move all "Available sites" to "Chosen sites"
-1. Click "Save"
-
-###### Setup Google OAuth
-
-1. Setup a [new OAuth app in Google](https://developers.google.com/identity/sign-in/web/sign-in) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8000/auth/google/callback/`.
-1. Under "Social Accounts", click "Add" and add a social application with the following info:
-    Name: Google
-    Client id: from #1
-    Secret key: from #1
-    Key: N/A
-    Sites: move all "Available sites" to "Chosen sites"
-1. Click "Save"
-
-#### Frontend
-
-1. Change into the Web base directory: `cd web`
-1. Install Node dependencies: `npm install`
-1. Start the development server: `npm run serve`
-1. View at [http://localhost:8080](http://localhost:8080)
-
-## Example API Usage
-
-#### Authentication
-
-1. Get your OAuth URL: `curl -I http://localhost:8000/auth/<provider>/url/` where `<provider>` is `github` or `google`
-1. You will get a 302 redirect URL from your 3rd party OAuth2 provider to the frontend.
-    Example callback: `https://frontend/auth/<provider>?code=a1e3ccca86ab0645cd92&state=MQ1CQVhgpSV4`
-1. Get an auth token: `curl -X POST localhost:8000/auth/<provider>/token/ -d code=a1e3ccca86ab0645cd92`
-    Example response: `{"key":"2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"}`
-1. Get your user's details: `curl localhost:8000/auth/user/ -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"`
-    Example response:
-    ```json
-    {"pk":2,"username":"example","email":"you@example.com","first_name":"Example","last_name":"User"}
-    ```
-1. Logout: `curl localhost:8000/auth/logout/ -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"`
-    Example response:
-    ```json
-    {"detail":"Successfully logged out."}
-    ```
-
-#### Posts
-
-1. Get recent Posts: `curl localhost:8000/posts`
-1. Get HOF Posts: `curl localhost:8000/hof`
-1. Like a Post: `curl localhost:8000/like/<id>/` where `<id>` is the Post ID
-1. Create a Post (session required): `curl -X POST -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba" localhost:8000/post -d title="Test title" -d content="Test content"`
-1. Edit a Post (session required): `curl -X PUT -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba" localhost:8000/post/<id>/ -d title="Updated title" -d content="Updated content"` 
-1. Delete a Post (session required): `curl -X DELETE -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba" localhost:8000/post/<id>/`
+To see what's slated for the `v2.0.0` release, checkout our [GitHub Project](https://github.com/mechtron/drf-vuejs/projects/2).
