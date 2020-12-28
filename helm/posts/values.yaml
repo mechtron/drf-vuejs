@@ -11,6 +11,7 @@ api:
     tag: latest
   serviceType: LoadBalancer
   apiSecret: apis3r3t # use --set to override this in production
+  debug: "false"
 
 web:
   image:

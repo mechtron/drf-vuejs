@@ -32,6 +32,8 @@ spec:
               secretKeyRef:
                 name: {{ template "apiName" . }}-secret
                 key: app-secret
+          - name: DEBUG
+            value: {{ .Values.api.debug }}
           - name: MYSQL_HOSTNAME
             value: {{ template "dbName" . }}
           - name: MYSQL_USERNAME
