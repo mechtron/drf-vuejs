@@ -5,6 +5,9 @@ docker_up:
 docker_down:
 	docker-compose down
 
+docker_image:
+	sh ./scripts/docker_build.sh
+
 api_create_admin:
 	docker exec -it posts-api python3 manage.py createsuperuser
 
