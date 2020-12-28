@@ -10,7 +10,7 @@
       </b-row>
       <b-row>
         <b-col></b-col>
-        <b-col cols="8"> 
+        <b-col cols="10"> 
           <div v-for="(item, index) in hofPosts" :key="item.id">
             <b-card :header="getPlacePretty(index)" :title="item.title" :sub-title="item.content">
               <b-card-text>
