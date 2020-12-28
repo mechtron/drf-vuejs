@@ -22,7 +22,7 @@ spec:
         - name: api
           image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
           imagePullPolicy: IfNotPresent
-          command: [ "gunicorn", "api.wsgi", "--bind", "0.0.0.0:8000" ]
+          command: [ "gunicorn", "--workers", "3", "--log-level", "debug", "--capture-output", "--bind", "0.0.0.0:8000", "api.wsgi" ]
           ports:
             - containerPort: 8000
               protocol: TCP
