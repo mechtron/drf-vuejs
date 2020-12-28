@@ -1,3 +1,5 @@
+hostname: posts.k8s.sandbox.ggops.com
+
 mysql:
   mysqlDatabase: posts
   mysqlUser: posts
@@ -7,7 +9,6 @@ api:
   image:
     repository: mechtron/posts-api
     tag: latest
-  hostname: posts-api.k8s.sandbox.ggops.com
   serviceType: LoadBalancer
   apiSecret: apis3r3t # use --set to override this in production
 
@@ -15,5 +16,4 @@ web:
   image:
     repository: mechtron/posts-web
     tag: latest
-  hostname: posts.k8s.sandbox.ggops.com
   serviceType: LoadBalancer

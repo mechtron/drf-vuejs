@@ -11,7 +11,7 @@ metadata:
       apiVersion: ambassador/v1
       kind: Mapping
       name: api_mapping_{{ .Values.name }}
-      host: {{ .Values.api.hostname }}
+      host: {{ .Values.hostname }}
       prefix: /api/
       service: {{ template "apiName" . }}.{{ .Release.Namespace }}:8000
       timeout_ms: 10000
@@ -38,7 +38,7 @@ metadata:
       apiVersion: ambassador/v1
       kind: Mapping
       name: web_mapping_{{ .Values.name }}
-      host: {{ .Values.web.hostname }}
+      host: {{ .Values.hostname }}
       prefix: /
       service: {{ template "webName" . }}.{{ .Release.Namespace }}:80
       timeout_ms: 10000
