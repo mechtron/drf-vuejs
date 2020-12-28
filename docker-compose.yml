@@ -16,7 +16,7 @@ services:
       MYSQL_USERNAME: root
       MYSQL_PASSWORD: password
       OAUTH2_CALLBACK_HOSTNAME: "http://127.0.0.1"
-      SECRET_KEY: s3cr3t
+      API_SECRET: s3cr3t
     depends_on:
       - mysql
 

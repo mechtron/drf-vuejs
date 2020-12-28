@@ -19,7 +19,7 @@ spec:
         image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
         imagePullPolicy: IfNotPresent
         env:
-        - name: SECRET_KEY
+        - name: API_SECRET
           valueFrom:
             secretKeyRef:
               name: {{ template "apiName" . }}-secret

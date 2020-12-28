@@ -27,7 +27,7 @@ spec:
             - containerPort: 8000
               protocol: TCP
           env:
-          - name: SECRET_KEY
+          - name: API_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "apiName" . }}-secret
