@@ -22,12 +22,12 @@ By Corey Gale (`mechtrondev[at]gmail.com`)
 1. Migrate the database: `python3 manage.py migrate`
 1. Create a super user: `python3 manage.py createsuperuser --email <your-email> --username admin`
 1. Start the API: `python3 manage.py runserver`
-1. Log into the [Django Admin web console](http://localhost:8000/admin) using the superuser created in #5
+1. Log into the [Django Admin web console](http://localhost:8000/admin/) using the superuser created in #5
 1. Under the "Sites" section, add your site domain name(s) (`127.0.0.1` for local dev)
 
 #### Setup Google OAuth
 
-1. Setup a [new OAuth app in Google](https://developers.google.com/identity/sign-in/web/sign-in) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8000/auth/google/callback/`.
+1. Setup a [new OAuth app in Google](https://developers.google.com/identity/sign-in/web/sign-in) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8080/auth/google/`.
 1. Under "Social Accounts", click "Add" and add a social application with the following info:
     Name: Google
     Client id: from #1
@@ -38,7 +38,7 @@ By Corey Gale (`mechtrondev[at]gmail.com`)
 
 #### Setup GitHub OAuth
 
-1. Setup a [new OAuth app in GitHub](https://github.com/settings/applications/new) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8000/auth/github/callback/`.
+1. Setup a [new OAuth app in GitHub](https://github.com/settings/applications/new) and obtain a Client ID and Client Secret. Enter the callback URL `http://localhost:8080/auth/github/`.
 1. Under "Social Accounts", click "Add" and add a social application with the following info:
     Name: GitHub
     Client id: from #1
@@ -74,10 +74,11 @@ If you prefer, there is also a `docker-compose` environment included which allow
 
 ### Authentication
 
-1. Get your OAuth URL: `curl -I http://localhost:8000/auth/<provider>/url/` where `<provider>` is `github` or `google`
+1. Generate and redirect your client to Google's OAuth Login URL.
+    Example URL: `https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://127.0.0.1:8080/auth/google/&prompt=consent&response_type=code&client_id=<client_id>&scope=email+profile&access_type=offline` where `<client_id>` is your Client ID from #1 in "Setup Google OAuth" above.
 1. You will get a 302 redirect URL from your 3rd party OAuth2 provider to the frontend.
-    Example callback: `https://frontend/auth/<provider>?code=a1e3ccca86ab0645cd92&state=MQ1CQVhgpSV4`
-1. Get an auth token: `curl -X POST localhost:8000/auth/<provider>/token/ -d code=a1e3ccca86ab0645cd92`
+    Example callback: `https://frontend/auth/<provider>/?code=a1e3ccca86ab0645cd92&state=MQ1CQVhgpSV4`
+1. Get an auth token: `curl -X POST localhost:8000/auth/<provider>/ -d code=a1e3ccca86ab0645cd92`
     Example response: `{"key":"2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"}`
 1. Get your user's details: `curl localhost:8000/auth/user/ -H "Authorization: Token 2f0d8f56aa3111e9b372a1ab582a0dcee22a71ba"`
     Example response:
