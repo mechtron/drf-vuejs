@@ -8,9 +8,9 @@ Posts is a CRUD app that allows its users to create and up-vote "Posts". Popular
 
 This goal of this project is to provide complete backend, frontend and IaC to serve as a foundation to kick start building new apps.
 
-## App screens
+## Web app screenshots
 
-![This could all be yours if you fork this repo today](/docs/screenshot.gif?raw=true)
+![This could all be yours if you fork this repo today](/docs/web-app-screens.gif?raw=true)
 
 ## Live demo
 
