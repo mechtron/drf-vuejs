@@ -26,7 +26,7 @@ export default {
     getSessionToken(oAuthCode) {
       console.log('Getting session token..')
       axios({
-        url: '/auth/google/token/',
+        url: '/auth/google/',
         method: 'POST',
         data: {code: oAuthCode}
       })
@@ -44,8 +44,8 @@ export default {
     },
     decodeParams() {
       let oAuthProvider = this.$route.params.provider
-      let params = new URLSearchParams(this.$route.params.params)
-      if (oAuthProvider == null || params.get("code") == null) {
+      let code = this.$route.query.code
+      if (oAuthProvider == null || code == null) {
         this.$router.push('/')
         return
       }
@@ -54,7 +54,7 @@ export default {
         this.$router.push('/')
         return
       }
-      this.getSessionToken(params.get("code"))
+      this.getSessionToken(code)
     }
   },
   mounted() {

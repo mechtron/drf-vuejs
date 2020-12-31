@@ -31,7 +31,7 @@ const routes = [
     component: About
   },
   {
-    path: '/auth/:provider/:params',
+    path: '/auth/:provider/(.*)',
     name: 'Auth',
     component: Auth
   }

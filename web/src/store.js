@@ -69,12 +69,23 @@ export default new Vuex.Store({
   },
   actions: {
     login(state, oAuthProvider) {
+      var oAuthRedirectUrl = ''
       if (oAuthProvider == 'google') {
         console.log("Logging in via Google..")
-        window.location = `${process.env.VUE_APP_API_HOSTNAME}/auth/google/url/`
+        let web_hostname = location.protocol + '//' + location.hostname + (location.port ? ':'+location.port: '')
+        let client_id = '890243898486-olm14s1qrk5vlbhofbq0skql2hst4j2a.apps.googleusercontent.com'
+        let scope = 'email+profile'
+        let access_type = 'offline'
+        oAuthRedirectUrl = (
+          `https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=` +
+          `${web_hostname}/auth/google/&prompt=consent&response_type=code&client_id=${client_id}` +
+          `&scope=${scope}&access_type=${access_type}`
+        )
       } else {
         console.log('Unexpected oAuthProvider: ' + oAuthProvider)
+        return
       }
+      window.location = oAuthRedirectUrl
     },
     logout({ commit, state }, oAuthProvider) {
       if (oAuthProvider == 'google') {

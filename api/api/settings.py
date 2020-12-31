@@ -36,8 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_auth',
-    'rest_auth.registration',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -64,7 +64,6 @@ CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1',
     'http://127.0.0.1:8080',
     'http://localhost:8080',
-    'https://accounts.google.com'
 )
 
 ROOT_URLCONF = 'api.urls'
@@ -182,6 +181,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 SOCIALACCOUNT_QUERY_EMAIL = True
+
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {

@@ -10,12 +10,11 @@ services:
     volumes:
      - ./api:/api
     environment:
+      API_SECRET: s3cr3t
       DATABASE_MODE: mysql
       MYSQL_HOSTNAME: mysql
       MYSQL_USERNAME: root
       MYSQL_PASSWORD: password
-      OAUTH2_CALLBACK_HOSTNAME: "http://127.0.0.1"
-      API_SECRET: s3cr3t
     depends_on:
       - mysql
 
@@ -38,6 +37,6 @@ services:
         NODE_ENV: development
     restart: always
     ports:
-     - "80:80"
+     - "8080:80"
     depends_on:
       - api
