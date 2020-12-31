@@ -17,13 +17,15 @@ spec:
       containers:
       - name: django-migrate
         image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: API_SECRET
           valueFrom:
             secretKeyRef:
               name: {{ template "apiName" . }}-secret
               key: app-secret
+        - name: DATABASE_MODE
+          value: {{ .Values.api.databaseMode }}
         - name: MYSQL_HOSTNAME
           value: {{ template "dbName" . }}
         - name: MYSQL_USERNAME

@@ -13,7 +13,7 @@ release: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "dbName" -}}
-{{- printf "%s-%s" .Release.Name "db" | trunc 63 -}}
+{{- printf "%s-%s" .Release.Name "mysql" | trunc 63 -}}
 {{- end -}}
 
 {{- define "webName" -}}

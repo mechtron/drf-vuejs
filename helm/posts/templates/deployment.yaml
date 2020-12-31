@@ -21,7 +21,7 @@ spec:
       containers:
         - name: api
           image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           # command: [ "gunicorn", "--workers", "3", "--log-level", "debug", "--capture-output", "--bind", "0.0.0.0:8000", "api.wsgi" ]
           ports:
             - containerPort: 8000
@@ -33,7 +33,9 @@ spec:
                 name: {{ template "apiName" . }}-secret
                 key: app-secret
           - name: DEBUG
-            value: {{ .Values.api.debug }}
+            value: "{{ .Values.api.debug }}"
+          - name: DATABASE_MODE
+            value: {{ .Values.api.databaseMode }}
           - name: MYSQL_HOSTNAME
             value: {{ template "dbName" . }}
           - name: MYSQL_USERNAME
@@ -43,6 +45,8 @@ spec:
               secretKeyRef:
                 name: {{ template "dbName" . }}-password
                 key: mysql-password
+          - name: WEB_HOSTNAME
+            value: "https://{{ .Values.hostname }}"
           livenessProbe:
             httpGet:
               path: /health
@@ -82,7 +86,7 @@ spec:
       containers:
         - name: web
           image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
               protocol: TCP
