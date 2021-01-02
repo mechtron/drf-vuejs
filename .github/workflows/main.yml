@@ -38,7 +38,7 @@ jobs:
         fi
         TAGS="${DOCKER_IMAGE}:${VERSION}"
         echo ::set-output name=version::${VERSION}
-        echo ::set-output name=tags::${TAGS}
+        echo ::set-output name=tag::${TAGS}
         echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
     - name: Build API Docker image
       uses: docker/build-push-action@v2
@@ -46,7 +46,7 @@ jobs:
         context: ./api/
         file: ./api/Dockerfile
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.prep_api.outputs.tags }}
+        tags: ${{ steps.prep_api.outputs.tag }}
         labels: |
           org.opencontainers.image.source=${{ github.event.repository.html_url }}
           org.opencontainers.image.created=${{ steps.prep_api.outputs.created }}
@@ -65,7 +65,7 @@ jobs:
         fi
         TAGS="${DOCKER_IMAGE}:${VERSION}"
         echo ::set-output name=version::${VERSION}
-        echo ::set-output name=tags::${TAGS}
+        echo ::set-output name=tag::${TAGS}
         echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
     - name: Build Web Docker image
       uses: docker/build-push-action@v2
@@ -73,22 +73,41 @@ jobs:
         context: ./web/
         file: ./web/Dockerfile
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.prep_web.outputs.tags }}
+        tags: ${{ steps.prep_web.outputs.tag }}
         labels: |
           org.opencontainers.image.source=${{ github.event.repository.html_url }}
           org.opencontainers.image.created=${{ steps.prep_web.outputs.created }}
           org.opencontainers.image.revision=${{ github.sha }}
+    - name: Prepare for deployment
+      id: prep_deploy
+      run: |
+        if [[ $GITHUB_REF = "refs/heads/master" ]]
+        then
+            export ENV_PREFIX=""
+            export API_SECRET=${{ secrets.API_SECRET_PROD }}
+            export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_PROD }}
+        else
+            export ENV_PREFIX="posts-"
+            export API_SECRET=${{ secrets.API_SECRET_DEV }}
+            export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_DEV }}
+        fi
+        echo ::set-output name=name::${{ steps.set_env.outputs.env }}
+        echo ::set-output name=hostname::${ENV_PREFIX}${{ steps.set_env.outputs.env }}.k8s.sandbox.ggops.com
+        echo ::set-output name=api_image_tag::${{ steps.prep_api.outputs.tag }}
+        echo ::set-output name=web_image_tag::${{ steps.prep_web.outputs.tag }}
+        echo ::set-output name=api_secret::${API_SECRET}
+        echo ::set-output name=mysql_password::${MYSQL_PASSWORD}
     - name: Deploy Helm chart to EKS
       if: steps.set_env.outputs.env == 'prod'
       uses: mechtron/github-actions-ek8s-toolbox@2.0.0
-      env:
-        API_SECRET: ${{ secrets.API_SECRET }}
-        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+      # env:
+      #   API_SECRET: ${{ steps.prep_deploy.output.api_secret }}
+      #   MYSQL_PASSWORD: ${{ steps.prep_deploy.output.mysql_password }}
       with:
         awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
         awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         awsDefaultRegion: 'us-east-1'
-        eksClusterName: ${{ secrets.EKS_CLUSTER_NAME }}
+        eksClusterName: ${{ secrets.EKS_CLUSTER_NAME_PROD }}
         helmVersion: '3.3.0'
         helmfileVersion: '0.125.7'
         kubectlVersion: '1.18.8'
@@ -99,8 +118,8 @@ jobs:
           helm dependency update helm/posts
           helm upgrade \
             --install posts \
-            --namespace=posts \
+            --namespace=posts-${{ steps.set_env.outputs.env }} \
             --create-namespace \
             helm/posts \
-            --set api.apiSecret=$API_SECRET \
-            --set mysql.mysqlPassword=$MYSQL_PASSWORD
+            --set api.apiSecret=${{ steps.prep_deploy.output.api_secret }} \
+            --set mysql.mysqlPassword=${{ steps.prep_deploy.output.mysql_password }}
