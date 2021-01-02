@@ -2,7 +2,7 @@ name: Posts workflow
 on:
   push:
     branches:
-    - master
+    - "*"
   create:
     tags:
       - "*"
