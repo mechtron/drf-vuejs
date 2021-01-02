@@ -85,6 +85,7 @@ jobs:
           org.opencontainers.image.created=${{ steps.prep_web.outputs.created }}
           org.opencontainers.image.revision=${{ github.sha }}
     - name: Deploy Helm chart to EKS
+      if: steps.set_env.outputs.env == 'prod'
       uses: mechtron/github-actions-ek8s-toolbox@2.0.0
       env:
         API_SECRET: ${{ secrets.API_SECRET }}
