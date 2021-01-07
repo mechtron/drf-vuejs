@@ -1,3 +1,4 @@
+envName: prod
 hostname: posts.k8s.sandbox.ggops.com
 
 mysql:
