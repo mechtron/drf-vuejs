@@ -56,46 +56,46 @@ jobs:
           org.opencontainers.image.source=${{ github.event.repository.html_url }}
           org.opencontainers.image.created=${{ steps.prep_web.outputs.created }}
           org.opencontainers.image.revision=${{ github.sha }}
-    # - name: Prepare for deployment
-    #   id: prep_deploy
-    #   run: |
-    #     if [[ $GITHUB_REF = "refs/heads/master" ]]
-    #     then
-    #         export ENV_PREFIX=""
-    #         export API_SECRET=${{ secrets.API_SECRET_PROD }}
-    #         export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_PROD }}
-    #     else
-    #         export ENV_PREFIX="posts-"
-    #         export API_SECRET=${{ secrets.API_SECRET_DEV }}
-    #         export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_DEV }}
-    #     fi
-    #     echo ::set-output name=hostname::$ENV_PREFIX${{ steps.set_env.outputs.env }}.k8s.sandbox.ggops.com
-    #     echo ::set-output name=api_image_tag::${{ steps.prep_api.outputs.tag }}
-    #     echo ::set-output name=web_image_tag::${{ steps.prep_web.outputs.tag }}
-    #     echo ::set-output name=api_secret::$API_SECRET
-    #     echo ::set-output name=mysql_password::$MYSQL_PASSWORD
-    # - name: Deploy Helm chart to EKS
-    #   uses: mechtron/github-actions-ek8s-toolbox@2.0.0
-    #   with:
-    #     awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     awsDefaultRegion: 'us-east-1'
-    #     eksClusterName: ${{ secrets.EKS_CLUSTER_NAME }}
-    #     helmVersion: '3.3.0'
-    #     helmfileVersion: '0.125.7'
-    #     kubectlVersion: '1.18.8'
-    #     istioctlVersion: '1.5.9'
-    #     kubevalVersion: '0.15.0'
-    #     command: |
-    #       helm repo add google https://charts.helm.sh/stable
-    #       helm dependency update helm/posts
-    #       helm upgrade \
-    #         --install posts \
-    #         --namespace=posts-${{ steps.set_env.outputs.env }} \
-    #         --create-namespace \
-    #         helm/posts \
-    #         --set hostname=${{ steps.prep_deploy.output.hostname }} \
-    #         --set api.image.tag=${{ steps.prep_deploy.output.api_image_tag }} \
-    #         --set web.image.tag=${{ steps.prep_deploy.output.web_image_tag }} \
-    #         --set api.apiSecret=${{ steps.prep_deploy.output.api_secret }} \
-    #         --set mysql.mysqlPassword=${{ steps.prep_deploy.output.mysql_password }}
+    - name: Prepare for deployment
+      id: prep_deploy
+      run: |
+        if [[ "$GITHUB_REF" = "refs/heads/master" ]]
+        then
+            export ENV_PREFIX=""
+            export API_SECRET=${{ secrets.API_SECRET_PROD }}
+            export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_PROD }}
+        else
+            export ENV_PREFIX="posts-"
+            export API_SECRET=${{ secrets.API_SECRET_DEV }}
+            export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_DEV }}
+        fi
+        echo ::set-output name=env_name::posts-${{ steps.set_env.outputs.env }}
+        echo ::set-output name=hostname::${ENV_PREFIX}${{ steps.set_env.outputs.env }}.k8s.sandbox.ggops.com
+        echo ::set-output name=api_secret::${API_SECRET}
+        echo ::set-output name=mysql_password::${MYSQL_PASSWORD}
+    - name: Deploy Helm chart to EKS
+      uses: mechtron/github-actions-ek8s-toolbox@2.0.0
+      with:
+        awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        awsDefaultRegion: 'us-east-1'
+        eksClusterName: ${{ secrets.EKS_CLUSTER_NAME }}
+        helmVersion: '3.3.0'
+        helmfileVersion: '0.125.7'
+        kubectlVersion: '1.18.8'
+        istioctlVersion: '1.5.9'
+        kubevalVersion: '0.15.0'
+        command: |
+          helm repo add google https://charts.helm.sh/stable
+          helm dependency update helm/posts
+          helm upgrade \
+            --install posts \
+            --namespace=${{ steps.prep_deploy.outputs.env_name }} \
+            --create-namespace \
+            helm/posts \
+            --set envName=${{ steps.prep_deploy.outputs.env_name }} \
+            --set hostname=${{ steps.prep_deploy.outputs.hostname }} \
+            --set api.image.tag=${{ steps.prep_api.outputs.version }} \
+            --set web.image.tag=${{ steps.prep_web.outputs.version }} \
+            --set api.apiSecret=${{ steps.prep_deploy.outputs.api_secret }} \
+            --set mysql.mysqlPassword=${{ steps.prep_deploy.outputs.mysql_password }}

@@ -10,7 +10,7 @@ metadata:
       ---
       apiVersion: ambassador/v1
       kind: Mapping
-      name: api_mapping_{{ .Values.name }}
+      name: {{ .Values.envName }}_api
       host: {{ .Values.hostname }}
       prefix: /api/
       service: {{ template "apiName" . }}.{{ .Release.Namespace }}:8000
@@ -37,7 +37,7 @@ metadata:
       ---
       apiVersion: ambassador/v1
       kind: Mapping
-      name: web_mapping_{{ .Values.name }}
+      name: {{ .Values.envName }}_web
       host: {{ .Values.hostname }}
       prefix: /
       service: {{ template "webName" . }}.{{ .Release.Namespace }}:80
