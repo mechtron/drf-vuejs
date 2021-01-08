@@ -18,6 +18,13 @@ spec:
       - name: django-migrate
         image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
         imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 256m
+            memory: 1Gi
+          requests:
+            cpu: 128m
+            memory: 256Mi
         env:
         - name: API_SECRET
           valueFrom:
