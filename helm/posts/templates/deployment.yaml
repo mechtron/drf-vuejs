@@ -101,6 +101,9 @@ spec:
             requests:
               cpu: 32m
               memory: 64Mi
+          env:
+          - name: VUE_APP_API_HOSTNAME
+            value: "https://{{ .Values.hostname }}/api"
           ports:
             - containerPort: 80
               protocol: TCP
