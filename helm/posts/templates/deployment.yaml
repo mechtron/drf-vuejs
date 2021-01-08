@@ -22,6 +22,13 @@ spec:
         - name: api
           image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 256m
+              memory: 1Gi
+            requests:
+              cpu: 128m
+              memory: 256Mi
           command: [ "gunicorn", "--workers", "2", "--log-level", "debug", "--capture-output", "--bind", "0.0.0.0:8000", "api.wsgi" ]
           ports:
             - containerPort: 8000
@@ -87,6 +94,13 @@ spec:
         - name: web
           image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 64m
+              memory: 128Mi
+            requests:
+              cpu: 32m
+              memory: 64Mi
           ports:
             - containerPort: 80
               protocol: TCP
