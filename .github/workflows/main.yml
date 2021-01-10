@@ -99,3 +99,7 @@ jobs:
             --set web.image.tag=${{ steps.prep_web.outputs.version }} \
             --set api.apiSecret=${{ steps.prep_deploy.outputs.api_secret }} \
             --set mysql.mysqlPassword=${{ steps.prep_deploy.outputs.mysql_password }}
+    - name: Output environment hostname
+      run: |
+        export HOSTNAME=https://${{ steps.prep_deploy.outputs.hostname }}
+        echo "Environment hostname is $HOSTNAME"
