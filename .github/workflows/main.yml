@@ -75,7 +75,7 @@ jobs:
         echo ::set-output name=api_secret::${API_SECRET}
         echo ::set-output name=mysql_password::${MYSQL_PASSWORD}
     - name: Deploy Helm chart to EKS
-      uses: mechtron/github-actions-ek8s-toolbox@2.0.0
+      uses: mechtron/github-actions-ek8s-toolbox@2.1.0
       with:
         awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
         awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
