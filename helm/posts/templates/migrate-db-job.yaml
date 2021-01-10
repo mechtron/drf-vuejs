@@ -42,6 +42,13 @@ spec:
             secretKeyRef:
               name: {{ template "dbName" . }}-password
               key: mysql-password
+        - name: DJANGO_SU_EMAIL
+          value: {{ .Values.api.djangoSuEmail }}
+        - name: DJANGO_SU_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "apiName" . }}-su-password
+              key: django-su-password
         command:
          - "python3"
          - "manage.py"

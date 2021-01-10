@@ -15,6 +15,8 @@ api:
   serviceType: LoadBalancer
   apiSecret: apis3r3t # use --set to override this in production
   databaseMode: mysql
+  djangoSuEmail: you@example.com
+  djangoSuPassword: adminpassw0rd # use --set to override this in production
   debug: "true"
 
 web:

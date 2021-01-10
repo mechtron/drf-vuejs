@@ -52,6 +52,13 @@ spec:
               secretKeyRef:
                 name: {{ template "dbName" . }}-password
                 key: mysql-password
+          - name: DJANGO_SU_EMAIL
+            value: {{ .Values.api.djangoSuEmail }}
+          - name: DJANGO_SU_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "apiName" . }}-su-password
+                key: django-su-password
           - name: WEB_HOSTNAME
             value: "https://{{ .Values.hostname }}"
           livenessProbe:
