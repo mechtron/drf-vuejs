@@ -64,16 +64,21 @@ jobs:
             export HOSTNAME=posts.k8s.sandbox.ggops.com
             export API_SECRET=${{ secrets.API_SECRET_PROD }}
             export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_PROD }}
-            export ENV_EXPIRY_DATE
+            export DJANGO_SU_EMAIL=${{ secrets.DJANGO_SU_EMAIL_PROD }}
+            export DJANGO_SU_PASSWORD=${{ secrets.DJANGO_SU_PASSWORD_PROD }}
         else
             export HOSTNAME=posts-${{ steps.set_env.outputs.env }}.k8s.sandbox.ggops.com
             export API_SECRET=${{ secrets.API_SECRET_DEV }}
             export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_DEV }}
+            export DJANGO_SU_EMAIL=${{ secrets.DJANGO_SU_EMAIL_DEV }}
+            export DJANGO_SU_PASSWORD=${{ secrets.DJANGO_SU_PASSWORD_DEV }}
         fi
         echo ::set-output name=env_name::posts-${{ steps.set_env.outputs.env }}
         echo ::set-output name=hostname::${HOSTNAME}
         echo ::set-output name=api_secret::${API_SECRET}
         echo ::set-output name=mysql_password::${MYSQL_PASSWORD}
+        echo ::set-output name=django_su_email::${DJANGO_SU_EMAIL}
+        echo ::set-output name=django_su_password::${DJANGO_SU_PASSWORD}
     - name: Deploy Helm chart to EKS
       uses: mechtron/github-actions-ek8s-toolbox@2.1.0
       with:
@@ -99,7 +104,9 @@ jobs:
             --set api.image.tag=${{ steps.prep_api.outputs.version }} \
             --set web.image.tag=${{ steps.prep_web.outputs.version }} \
             --set api.apiSecret=${{ steps.prep_deploy.outputs.api_secret }} \
-            --set mysql.mysqlPassword=${{ steps.prep_deploy.outputs.mysql_password }}
+            --set mysql.mysqlPassword=${{ steps.prep_deploy.outputs.mysql_password }} \
+            --set api.djangoSuEmail=${{ steps.prep_deploy.outputs.django_su_email }} \
+            --set api.djangoSuPassword=${{ steps.prep_deploy.outputs.django_su_password }}
           if [[ ${{ steps.prep_deploy.outputs.env_name }} != "prod" ]]
           then
             kubectl annotate namespace ${{ steps.prep_deploy.outputs.env_name }} janitor/expires=`date --utc -d "7 days" +%Y-%m-%dT%H:%M:%SZ` --overwrite=true
