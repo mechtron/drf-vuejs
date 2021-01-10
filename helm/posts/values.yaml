@@ -1,6 +1,8 @@
 envName: prod
 hostname: posts.k8s.sandbox.ggops.com
 
+devEnvTtl: 7d
+
 mysql:
   mysqlDatabase: posts
   mysqlUser: posts

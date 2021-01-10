@@ -61,16 +61,17 @@ jobs:
       run: |
         if [[ "$GITHUB_REF" = "refs/heads/master" ]]
         then
-            export ENV_PREFIX=""
+            export HOSTNAME=posts.k8s.sandbox.ggops.com
             export API_SECRET=${{ secrets.API_SECRET_PROD }}
             export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_PROD }}
+            export ENV_EXPIRY_DATE
         else
-            export ENV_PREFIX="posts-"
+            export HOSTNAME=posts-${{ steps.set_env.outputs.env }}.k8s.sandbox.ggops.com
             export API_SECRET=${{ secrets.API_SECRET_DEV }}
             export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_DEV }}
         fi
         echo ::set-output name=env_name::posts-${{ steps.set_env.outputs.env }}
-        echo ::set-output name=hostname::${ENV_PREFIX}${{ steps.set_env.outputs.env }}.k8s.sandbox.ggops.com
+        echo ::set-output name=hostname::${HOSTNAME}
         echo ::set-output name=api_secret::${API_SECRET}
         echo ::set-output name=mysql_password::${MYSQL_PASSWORD}
     - name: Deploy Helm chart to EKS
@@ -99,6 +100,10 @@ jobs:
             --set web.image.tag=${{ steps.prep_web.outputs.version }} \
             --set api.apiSecret=${{ steps.prep_deploy.outputs.api_secret }} \
             --set mysql.mysqlPassword=${{ steps.prep_deploy.outputs.mysql_password }}
+          if [[ ${{ steps.prep_deploy.outputs.env_name }} != "prod" ]]
+          then
+            kubectl annotate namespace ${{ steps.prep_deploy.outputs.env_name }} janitor/expires=`date --utc -d "7 days" +%Y-%m-%dT%H:%M:%SZ` --overwrite=true
+          fi
     - name: Output environment hostname
       run: |
         export HOSTNAME=https://${{ steps.prep_deploy.outputs.hostname }}
