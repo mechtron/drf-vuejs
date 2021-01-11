@@ -32,11 +32,13 @@ export default new Vuex.Store({
       state.user.isLoggedIn = false;
       state.user.token = '';
       state.user.username = '';
+      localStorage.removeItem('token');
     },
     LOGOUT(state) {
       state.user.isLoggedIn = false;
       state.user.token = '';
       state.user.username = '';
+      localStorage.removeItem('token');
     },
     CREATE_POST(state, post) {
       state.posts.unshift(post);
