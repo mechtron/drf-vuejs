@@ -21,7 +21,7 @@ from posts.views import (
 )
 
 
-WEB_HOSTNAME = os.getenv('WEB_HOSTNAME', 'http://127.0.0.1:8080')
+WEB_HOSTNAME = os.getenv('WEB_HOSTNAME', 'http://localhost:8080')
 
 
 class GitHubLogin(SocialLoginView):

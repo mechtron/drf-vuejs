@@ -7,7 +7,7 @@ import random
 import requests
 
 
-API_HOST = os.environ.get('API_HOST', 'http://127.0.0.1:8000')
+API_HOST = os.environ.get('API_HOST', 'http://localhost:8000')
 API_AUTH_TOKEN = os.environ.get('API_AUTH_TOKEN', '')
 NUMBER_OF_POSTS_TO_CREATE = int(os.environ.get('NUMBER_OF_POSTS_TO_CREATE', 100))
 _NUMBER_OF_LIKES_MIN = 0

@@ -37,6 +37,6 @@ services:
     ports:
      - "8080:80"
     environment:
-      API_HOSTNAME: "http://127.0.0.1:8000"
+      API_HOSTNAME: "http://localhost:8000"
     depends_on:
       - api
