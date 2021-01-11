@@ -94,20 +94,23 @@ jobs:
         command: |
           helm repo add google https://charts.helm.sh/stable
           helm dependency update helm/posts
+          export DEV_IMAGE_PARAMS=""
+          if [[ ${{ steps.prep_deploy.outputs.env_name }} != "posts-prod" ]]
+          then
+            export DEV_IMAGE_PARAMS="--set api.image.tag=${{ steps.prep_api.outputs.version }} --set web.image.tag=${{ steps.prep_web.outputs.version }}"
+          fi
           helm upgrade \
             --install posts \
             --namespace=${{ steps.prep_deploy.outputs.env_name }} \
             --create-namespace \
-            helm/posts \
+            helm/posts $DEV_IMAGE_PARAMS \
             --set envName=${{ steps.prep_deploy.outputs.env_name }} \
             --set hostname=${{ steps.prep_deploy.outputs.hostname }} \
-            --set api.image.tag=${{ steps.prep_api.outputs.version }} \
-            --set web.image.tag=${{ steps.prep_web.outputs.version }} \
             --set api.apiSecret=${{ steps.prep_deploy.outputs.api_secret }} \
             --set mysql.mysqlPassword=${{ steps.prep_deploy.outputs.mysql_password }} \
             --set api.djangoSuEmail=${{ steps.prep_deploy.outputs.django_su_email }} \
             --set api.djangoSuPassword=${{ steps.prep_deploy.outputs.django_su_password }}
-          if [[ ${{ steps.prep_deploy.outputs.env_name }} != "prod" ]]
+          if [[ ${{ steps.prep_deploy.outputs.env_name }} != "posts-prod" ]]
           then
             kubectl annotate namespace ${{ steps.prep_deploy.outputs.env_name }} janitor/expires=`date --utc -d "7 days" +%Y-%m-%dT%H:%M:%SZ` --overwrite=true
           fi
