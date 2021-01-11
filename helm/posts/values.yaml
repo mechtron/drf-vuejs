@@ -9,7 +9,7 @@ mysql:
 api:
   image:
     repository: mechtron/posts-api
-    tag: 1.0.1
+    tag: 1.1.0
   serviceType: LoadBalancer
   apiSecret: apis3r3t # use --set to override this in production
   databaseMode: mysql
@@ -20,5 +20,5 @@ api:
 web:
   image:
     repository: mechtron/posts-web
-    tag: 1.0.1
+    tag: 1.1.0
   serviceType: LoadBalancer
