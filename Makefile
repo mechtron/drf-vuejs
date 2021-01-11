@@ -16,6 +16,7 @@ db_create:
 
 db_migrate:
 	docker exec posts-api python3 manage.py migrate
+	docker restart posts-api
 
 helm_upgrade_install:
 	helm upgrade --install posts --namespace=posts --create-namespace helm/posts
