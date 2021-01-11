@@ -84,6 +84,8 @@ Note: to use the OAuth features of the app, you will also need to arm the app wi
 
     kubectl -n <sanitized-branch-name> port-forward posts-api-123abc-45de 8000
 
+Once established, you can access Django site admin for the remote environment at [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/).
+
 # API usage
 
 ### Authentication
