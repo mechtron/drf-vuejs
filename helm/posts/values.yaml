@@ -10,7 +10,7 @@ api:
   image:
     repository: mechtron/posts-api
     tag: 1.1.0
-  serviceType: LoadBalancer
+  serviceType: NodePort
   apiSecret: apis3r3t # use --set to override this in production
   databaseMode: mysql
   djangoSuEmail: you@example.com
@@ -21,4 +21,4 @@ web:
   image:
     repository: mechtron/posts-web
     tag: 1.1.0
-  serviceType: LoadBalancer
+  serviceType: NodePort
